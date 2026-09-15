@@ -1,0 +1,33 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import {planQuestions,createPlan,formatMoney} from '../lib/it-plan';
+import '../styles/calculator.css';
+const start=createPlan(new URLSearchParams('users=18&management=managed&security=core&cloud=microsoft&coverage=business&network=basic'))!;
+---
+<SiteLayout path="/plan-your-it" title="Managed IT Pricing Calculator | Tech Judge Inc." description="Estimate monthly managed IT costs based on your team size, service level, security, cloud platform, support coverage and infrastructure.">
+ <section class="estimate-header"><div class="wrap"><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><span>Pricing</span></nav><div class="estimate-intro"><div><p class="eyebrow">Built around your business</p><h1>Your team.<br/><em>Your IT investment.</em></h1></div><p>Shape the support you need and see your monthly range take shape. A clearer starting point for your next conversation.</p></div></div></section>
+ <section class="pricing-workspace"><div class="wrap estimate-layout">
+ <form id="it-planner" class="setup-panel">
+  <div class="setup-heading"><div><h2>Build your setup</h2><p>Six choices. One connected plan.</p></div><button type="reset" class="reset-estimate">Reset choices</button></div>
+  <div class="setup-grid">
+   <div class="setup-card team-card"><label class="headcount-label" for="users"><span class="step-label">01</span> Your team size</label><div class="headcount-stepper"><button type="button" data-step="-1" aria-label="Remove one person">−</button><input id="users" name="users" type="number" inputmode="numeric" min="1" max="10000" step="1" required value="18" aria-describedby="users-hint"/><button type="button" data-step="1" aria-label="Add one person">+</button></div><p class="headcount-caption">people to support</p><div class="headcount-presets" aria-label="Common team sizes">{[10,25,50,100].map(n=><button type="button" data-headcount={n} aria-pressed="false" aria-label={`Set team size to ${n}`}>{n}</button>)}</div><p id="users-hint" class="setup-hint">Include full-time and part-time staff. Enter <strong>1 to 10,000</strong> people.</p></div>
+   {planQuestions.map((q,i)=><fieldset class="setup-card"><legend><span class="step-label">{String(i+2).padStart(2,'0')}</span>{q.label}</legend><div class="choice-group" data-key={q.key}>{q.options.map(o=><label class="choice"><input type="radio" name={q.key} value={o[0]} checked={o[0]===(q.key==='management'?'managed':q.options[0][0])} required aria-describedby={'hint-'+q.key}/><span class="choice-content">{o[1]}</span></label>)}</div><p id={'hint-'+q.key} class="setup-hint" data-choice-hint={q.key}>{q.options.find(o=>o[0]===(q.key==='management'?'managed':q.options[0][0]))?.[2]}</p></fieldset>)}
+  </div>
+  <p class="setup-footnote"><span aria-hidden="true"></span>Your estimate updates as you adjust your setup.</p>
+  <noscript><p class="setup-hint">Enable JavaScript for live estimates, or <a href="/contact-us">contact our team</a> to discuss your needs. The displayed range reflects the starting configuration.</p></noscript>
+ </form>
+ <div class="quote-column"><aside class="quote-panel" id="quote-panel" aria-labelledby="quote-title">
+  <div class="quote-kicker"><span>Your investment</span><span class="live-estimate">Live estimate</span></div>
+  <h2 id="quote-title">A plan that fits.</h2><p id="plan-team" class="quote-for">Built around 18 people.</p>
+  <p id="plan-change" class="quote-invalid" hidden>Enter a whole number from 1 to 10,000 to see your monthly range.</p>
+  <div id="plan-result"><div id="plan-price" class="price-range" role="group" aria-label={start.range+' per month'}><div class="price-bound" aria-hidden="true"><span>From</span><span class="price-amount" id="price-low">{formatMoney(start.low)}</span></div><div class="price-bound" aria-hidden="true"><span>To</span><span class="price-amount" id="price-high">{formatMoney(start.high)}</span></div></div><p class="price-unit">per month · USD</p><div class="range-rule" aria-hidden="true"></div><dl id="plan-items" class="quote-details">{start.items.map(item=><div class="quote-selection"><dt>{item.label}</dt><dd>{item.answer}</dd></div>)}</dl></div>
+  <a id="plan-contact" class="button quote-cta" href={'/contact-us?users=18&management=managed&security=core&cloud=microsoft&coverage=business&network=basic&plan=1&service='+encodeURIComponent('Managed IT & Cybersecurity')}>Get my custom quote <span aria-hidden="true">↗</span></a>
+  <p class="quote-next">Bring this setup to our team.</p>
+  <details class="quote-assumptions"><summary>What could change the estimate?</summary><p>Device counts, the condition of existing infrastructure, compliance requirements and the number of sites affect final pricing. Service scope and support terms are confirmed after an assessment.</p></details>
+  <p class="quote-disclaimer">Planning estimate only. Hardware, cabling and migrations are quoted separately.</p>
+  <p id="plan-status" class="calculator-status" role="status" aria-live="polite" aria-atomic="true"></p>
+ </aside><p class="quote-helper">Need help choosing? <a href="/contact-us">Talk to our team</a>.</p></div>
+ </div></section>
+ <div class="mobile-estimate"><div><span>Monthly estimate</span><strong id="mobile-price">{start.range} / mo</strong></div><a href="#quote-panel">View estimate <span aria-hidden="true">↓</span></a></div>
+ <script>import '../scripts/calculator';</script>
+</SiteLayout>

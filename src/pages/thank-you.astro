@@ -1,0 +1,5 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+const staging=import.meta.env.PUBLIC_SITE_ENV!=='production';
+---
+<SiteLayout path="/thank-you" title="Message Confirmation | Tech Judge Inc." description="Your Tech Judge enquiry confirmation." utility={true}><section class="section wrap narrow confirmation"><p class="eyebrow">{staging?'Confirmation page preview':'Thank you for getting in touch'}</p><h1>{staging?'Your next step.':'Message received.'}</h1><p class="lead">{staging?'This is a preview of the confirmation page. No message was sent from the staging website.':'Thank you for contacting Tech Judge. Our team will review your enquiry and be in touch.'}</p><a class="button spaced" href="/">Back to home ↗</a><p class="subnote">For existing client support: <a href="mailto:support@techjudge.com">support@techjudge.com</a></p></section></SiteLayout>

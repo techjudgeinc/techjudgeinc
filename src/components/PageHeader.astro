@@ -1,0 +1,4 @@
+---
+const {eyebrow,title,accent='',intro=''}=Astro.props;
+---
+<section class="page-header wrap"><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><span>{eyebrow}</span></nav><p class="eyebrow">{eyebrow}</p><h1>{title}{accent && <><br/><em>{accent}</em></>}</h1>{intro && <p class="lead">{intro}</p>}</section>

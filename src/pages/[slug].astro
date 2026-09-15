@@ -1,0 +1,7 @@
+---
+import {allDetails} from '../data/content';
+import DetailPage from '../components/DetailPage.astro';
+export function getStaticPaths(){return allDetails.map(page=>({params:{slug:page.slug},props:{page}}));}
+const {page}=Astro.props;
+---
+<DetailPage page={page}/>

@@ -1,0 +1,14 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import ContactBand from '../components/ContactBand.astro';
+import baseline from '../data/baseline.json';
+import assets from '../data/assets.json';
+const groups=[['Managed IT & Cybersecurity','Tools for monitoring, identity, cloud productivity, protection and recovery.','it-and-cyber-security'],['Infrastructure & Security','Networking, video surveillance and access technologies for connected buildings.','infrastructure-and-security'],['Luxury Smart Homes','Integrated lighting, control and entertainment for a more intuitive home.','luxury-smart-home']];
+const groupLogos=(slug:string)=>{const rows=assets.filter(a=>a.pages.includes('https://www.techjudge.com/'+slug)&&a.alt.includes('Logo')&&!a.alt.includes('Tech Judge'));const seen=new Set();return rows.filter(a=>{const name=a.alt.toLowerCase().replaceAll(' ','').replace('communications','communication');if(seen.has(name))return false;seen.add(name);return true;});};
+---
+<SiteLayout path="/partners" {...baseline['/partners']}>
+  <PageHeader eyebrow="Technology partners" title="The right technology." accent="Brought together well." intro="A dependable system needs quality equipment and people who understand how it works together. Explore the brands across our three practices." />
+  <div class="light">{groups.map(([name,description,slug])=><section class="section partner-section"><div class="wrap"><div class="section-heading"><div><p class="eyebrow">Our technology ecosystem</p><h2>{name}</h2></div><p>{description}</p></div><div class="brand-grid">{groupLogos(slug).map(a=><div><img src={'/assets/'+a.file} alt={a.alt} width="170" height="70" loading="lazy"/></div>)}</div><a class="text-link" href={'/'+slug}>Explore {name.toLowerCase()} ↗</a></div></section>)}</div>
+  <ContactBand heading="Put the right technology to work." />
+</SiteLayout>

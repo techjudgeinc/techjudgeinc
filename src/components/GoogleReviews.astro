@@ -1,0 +1,11 @@
+---
+import {reviews,googleRating,googleReviewsUrl} from '../data/reviews';
+import '../styles/reviews.css';
+const {service}=Astro.props;
+const selected=service?reviews.filter(r=>r.slug===service):reviews;
+---
+{selected.length>0 && <section class="section google-reviews" aria-labelledby="reviews-heading"><div class="wrap">
+ <div class="section-heading"><div><p class="eyebrow">In our clients’ words</p><h2 id="reviews-heading">Trust earned.<br/><em>One project at a time.</em></h2></div><div class="review-summary"><p><span class="review-stars" aria-hidden="true">★★★★★</span> <strong>{googleRating.score} / 5</strong></p><a href={googleReviewsUrl} target="_blank" rel="noopener noreferrer">{googleRating.count} Google reviews ↗</a><small>Rating checked <time datetime={googleRating.date}>{googleRating.checked}</time></small></div></div>
+ <div class:list={['review-grid',{'review-grid-single':!!service}]}>{selected.map(r=><figure class="review-card"><p class="eyebrow">{r.topic}</p><blockquote>“{r.quote}”</blockquote><figcaption><strong>{r.name}</strong><span>Google review · Excerpt</span></figcaption></figure>)}</div>
+ <a class="text-link review-all" href={googleReviewsUrl} target="_blank" rel="noopener noreferrer">Read all reviews on Google <span aria-hidden="true">↗</span></a>
+ </div></section>}

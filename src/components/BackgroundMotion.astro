@@ -1,0 +1,47 @@
+---
+import '../styles/background-motion.css';
+---
+<div class="motion-controls wrap"><button id="background-motion-toggle" type="button" aria-pressed="false" hidden>Pause background motion</button></div>
+<script>
+ const preference=window.matchMedia('(prefers-reduced-motion: reduce)');
+ const toggle=document.querySelector<HTMLButtonElement>('#background-motion-toggle')!;
+ let paused=false;
+ try{paused=localStorage.getItem('techjudge-motion')==='paused';}catch{}
+ const themes=['circuit','waves','orbits','rising','blueprint'];
+ const pageThemes:Record<string,string>={'/':'orbits','/it-and-cyber-security':'circuit','/infrastructure-and-security':'blueprint','/luxury-smart-home':'waves','/about-us':'rising','/services':'blueprint','/industries':'orbits','/plan-your-it':'circuit','/contact-us':'waves','/partners':'orbits','/careers':'rising'};
+ const seed=Array.from(location.pathname).reduce((n,c)=>n+c.charCodeAt(0),0);
+ const base=themes.indexOf(pageThemes[location.pathname]||themes[seed%themes.length]);
+ const surfaces=Array.from(document.querySelectorAll<HTMLElement>('main > section:not(.contact-band):not(.legal-copy):not(.pricing-workspace)'));
+ for(const [index,surface] of surfaces.entries()){
+   surface.classList.add('motion-surface');
+   surface.style.setProperty('--motion-delay',`${-(index%5)*6}s`);
+   const art=document.createElement('div');art.className='ambient-art';art.setAttribute('aria-hidden','true');
+   const theme=themes[(base+index)%themes.length];art.dataset.theme=theme;
+   const circuit=document.createElementNS('http://www.w3.org/2000/svg','svg');
+   circuit.classList.add('ambient-circuit');circuit.setAttribute('viewBox','0 0 1200 650');circuit.setAttribute('preserveAspectRatio','none');
+   const shapes:Record<string,string[]>={
+     circuit:['M-80 120 H160 L240 200 H620 L720 100 H1280','M-80 490 H260 L350 400 H740 L830 490 H1280'],
+     waves:[0,1,2,3].map(n=>`M-100 ${170+n*85} C250 ${-40+n*85} 680 ${440+n*30} 1300 ${120+n*85}`),
+     orbits:['M250 330 a350 180 0 1 0 700 0 a350 180 0 1 0 -700 0','M360 330 a240 280 0 1 0 480 0 a240 280 0 1 0 -480 0'],
+     rising:[130,370,670,940].map((x,n)=>`M${x} 750 V${120+n*70}`),
+     blueprint:['M160 90 H1040 V550 H160 Z','M310 180 H880 V460 H310 Z','M-30 330 H1230','M600 -50 V700']
+   };
+   for(const d of shapes[theme]){
+     for(const style of ['circuit-track','circuit-signal']){const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d',d);path.setAttribute('class',style);path.setAttribute('vector-effect','non-scaling-stroke');circuit.append(path);}
+   }
+   art.append(circuit);
+   surface.prepend(art);
+ }
+ function update(){
+   document.documentElement.classList.toggle('motion-paused',paused||preference.matches||document.hidden);
+   toggle.hidden=preference.matches;
+   toggle.setAttribute('aria-pressed',String(paused));
+   toggle.textContent=paused?'Resume background motion':'Pause background motion';
+ }
+ toggle.addEventListener('click',()=>{paused=!paused;try{localStorage.setItem('techjudge-motion',paused?'paused':'running');}catch{}update();});
+ preference.addEventListener('change',update);
+ document.addEventListener('visibilitychange',update);
+ const observer=new IntersectionObserver(entries=>{for(const entry of entries)entry.target.classList.toggle('motion-visible',entry.isIntersecting);},{rootMargin:'80px'});
+ surfaces.forEach(surface=>observer.observe(surface));
+ update();
+</script>

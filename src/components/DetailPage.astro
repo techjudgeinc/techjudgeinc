@@ -1,0 +1,26 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import ContactBand from './ContactBand.astro';
+import GoogleReviews from './GoogleReviews.astro';
+import TechnologyGraphic from './TechnologyGraphic.astro';
+import { asset } from '../lib/assets';
+import { names } from '../data/content';
+import baseline from '../data/baseline.json';
+const {page}=Astro.props;
+const path='/'+page.slug;
+const meta=baseline[path as keyof typeof baseline];
+const schema={'@context':'https://schema.org','@type':page.type==='service'?'Service':'WebPage','@id':'https://www.techjudge.com'+path+'#'+page.type,name:page.name,url:'https://www.techjudge.com'+path,description:page.intro,...(page.type==='service'?{provider:{'@id':'https://www.techjudge.com/#organization'}}:{about:{'@id':'https://www.techjudge.com/#organization'}})};
+const breadcrumb={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'Home',item:'https://www.techjudge.com/'},{'@type':'ListItem',position:2,name:page.type==='service'?'Services':'Industries',item:'https://www.techjudge.com/'+(page.type==='service'?'services':'industries')},{'@type':'ListItem',position:3,name:page.name,item:'https://www.techjudge.com'+path}]};
+---
+<SiteLayout title={meta.title} description={meta.description} path={path}>
+  <Fragment slot="head"><script type="application/ld+json" set:html={JSON.stringify(schema)} /><script type="application/ld+json" set:html={JSON.stringify(breadcrumb)} /></Fragment>
+  <section class={'detail-hero wrap '+(page.slug==='luxury-smart-home'?'residential':'')}><div class="detail-intro"><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><a href={page.type==='service'?'/services':'/industries'}>{page.type==='service'?'Services':'Industries'}</a></nav><p class="eyebrow">{page.eyebrow}</p><h1>{page.headline}<br/><em>{page.accent}</em></h1><p class="lead">{page.intro}</p><a class="button" href={'/contact-us?service='+encodeURIComponent(page.name)}>{page.cta}<span aria-hidden="true">↗</span></a></div><div class="detail-image"><img src={asset(page.image)} width="700" height="650" alt={page.alt} fetchpriority="high" /></div></section>
+  <section class="section light"><div class="wrap content-intro"><p class="eyebrow">The whole picture</p><h2>{page.overviewTitle}</h2><p class="lead">{page.overview}</p></div><div class="wrap scope-layout"><nav class="on-page" aria-label="On this page"><p>Explore the scope</p>{page.sections.map((s:any)=><a href={'#'+s.id}>{s.title}<span aria-hidden="true">↓</span></a>)}</nav><div class="scope-sections">{page.sections.map((s:any,i:number)=><section id={s.id}><span class="scope-number">{String(i+1).padStart(2,'0')}</span><h3>{s.title}</h3><p>{s.text}</p>{s.items && <ul>{s.items.map((item:string)=><li>{item}</li>)}</ul>}</section>)}</div></div></section>
+  <section class="section"><div class="wrap"><p class="eyebrow">How we work</p><h2>A clear path.<br/><em>From the start.</em></h2><div class="process-grid">{page.process.map(([t,p]:string[],i:number)=><div><span>0{i+1}</span><h3>{t}</h3><p>{p}</p></div>)}</div></div></section>
+  {page.type==='service' && <section class="detail-schematic"><div class="wrap"><div><p class="eyebrow">Designed as one</p><h2>{page.slug==='luxury-smart-home'?'Every room. One experience.':page.slug==='it-and-cyber-security'?'Protection at every layer.':'A stronger connection.'}</h2><p class="lead">{page.slug==='luxury-smart-home'?'Lighting, entertainment and security work together through intuitive controls.':page.slug==='it-and-cyber-security'?'Your people, devices and data deserve a coordinated security plan.':'A well-designed network connects every device with the infrastructure it needs.'}</p></div><TechnologyGraphic kind={page.slug==='luxury-smart-home'?'home':page.slug==='it-and-cyber-security'?'security':'network'} caption={page.name}/></div></section>}
+  <section class="section light"><div class="wrap split"><div><p class="eyebrow">A few useful answers</p><h2>Let’s make<br/>things clearer.</h2><p class="lead">Have a question about your project?</p><a href="/contact-us" class="text-link">Ask our team <span aria-hidden="true">↗</span></a></div><div class="faqs">{page.faqs.map(([q,a]:string[])=><details><summary>{q}<span aria-hidden="true">+</span></summary><p>{a}</p></details>)}</div></div></section>
+  <section class="related-section"><div class="wrap"><p class="eyebrow">Connected expertise</p><div>{page.related.map((slug:string)=><a href={'/'+slug}>{names[slug]}<span aria-hidden="true">↗</span></a>)}</div></div></section>
+  {page.type==='service' && <GoogleReviews service={page.slug} />}
+  <ContactBand heading={page.cta+'.'} topic={page.name} />
+  {page.slug==='it-and-cyber-security' && <section class="section light"><div class="wrap"><p class="eyebrow">Start with your priorities</p><h2>What does your team need?</h2><p class="lead">Estimate monthly IT costs based on your headcount, platforms and support needs.</p><a class="button" href="/plan-your-it">Estimate your IT costs ↗</a></div></section>}
+</SiteLayout>

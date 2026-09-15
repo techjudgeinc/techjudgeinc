@@ -1,0 +1,12 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import ContactBand from '../components/ContactBand.astro';
+import {industryDetails} from '../data/content';
+import {asset} from '../lib/assets';
+---
+<SiteLayout path="/industries" title="Industries We Serve | Tech Judge Inc." description="Technology solutions for small businesses, property managers, general contractors, architects, designers and luxury home builders.">
+  <PageHeader eyebrow="Who we work with" title="Built around your work." accent="And your world." intro="The right technology starts with understanding the environment. We connect the expertise to what matters in yours." />
+  <section class="section light"><div class="wrap industry-grid">{industryDetails.map((p,i)=><a class="audience-card" href={'/'+p.slug}><img src={asset(p.image)} width="650" height="430" loading="lazy" alt={p.alt}/><div><p class="eyebrow">0{i+1}</p><h2>{p.name}</h2><p>{p.intro}</p><span class="card-link">Explore your solutions <span aria-hidden="true">↗</span></span></div></a>)}</div></section>
+  <ContactBand />
+</SiteLayout>

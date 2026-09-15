@@ -1,0 +1,10 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHeader from './PageHeader.astro';
+import legal from '../data/legal.json';
+import baseline from '../data/baseline.json';
+const {slug,title}=Astro.props;
+const meta=baseline[('/'+slug) as keyof typeof baseline];
+const blocks=legal[slug as keyof typeof legal];
+---
+<SiteLayout path={'/'+slug} title={meta.title} description={meta.description}><PageHeader eyebrow="Legal" title={title}/><section class="light legal-copy"><article class="wrap narrow prose">{blocks.map(b=>b.type==='h2'?<h2>{b.text}</h2>:<p>{b.text}</p>)}</article></section></SiteLayout>

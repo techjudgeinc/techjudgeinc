@@ -1,0 +1,1 @@
+export const publishedRoutes=['/','/it-and-cyber-security','/infrastructure-and-security','/luxury-smart-home','/about-us','/partners','/small-medium-businesses','/property-management','/general-contractors','/architects-designers','/luxury-home-builders','/careers','/contact-us','/terms-of-service','/privacy-policy','/services','/industries','/what-is-an-msp','/plan-your-it'];

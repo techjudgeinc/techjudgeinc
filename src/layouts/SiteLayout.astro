@@ -1,0 +1,69 @@
+---
+import '@fontsource-variable/inter';
+import '../styles/global.css';
+import BackgroundMotion from '../components/BackgroundMotion.astro';
+import ScrollExperience from '../components/ScrollExperience.astro';
+import '../styles/prototype-direction.css';
+import { logo, logoMark } from '../lib/assets';
+const { title, description, path = '/', utility = false } = Astro.props;
+const staging = import.meta.env.PUBLIC_SITE_ENV !== 'production';
+const canonical = new URL(path, 'https://www.techjudge.com').href;
+const services = [['Managed IT & Cybersecurity','/it-and-cyber-security'],['Infrastructure & Security','/infrastructure-and-security'],['Luxury Smart Homes','/luxury-smart-home']];
+const industries = [['Small & Medium Businesses','/small-medium-businesses'],['Property Management','/property-management'],['General Contractors','/general-contractors'],['Architects & Designers','/architects-designers'],['Luxury Home Builders','/luxury-home-builders']];
+const company = [['About Tech Judge','/about-us'],['Technology Partners','/partners'],['Careers','/careers'],['What is an MSP?','/what-is-an-msp']];
+const groups = [['Services','/services',services],['Industries','/industries',industries],['Company','/about-us',company]];
+const organization = { '@context':'https://schema.org', '@type':'Organization', '@id':'https://www.techjudge.com/#organization', name:'Tech Judge Inc.', url:'https://www.techjudge.com/', logo:'https://www.techjudge.com'+logo, telephone:'+18182132050',email:'info@techjudge.com',address:{'@type':'PostalAddress',streetAddress:'21943 Plummer St.',addressLocality:'Chatsworth',addressRegion:'CA',postalCode:'91311',addressCountry:'US'}};
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {(staging || utility) && <meta name="robots" content="noindex, nofollow" />}
+    {!utility && <link rel="canonical" href={canonical} />}
+    <meta name="theme-color" content="#111310" />
+    <link rel="icon" type="image/png" href={logoMark} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Tech Judge Inc." />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={'https://www.techjudge.com'+logo} />
+    <meta property="og:image:alt" content="Tech Judge Inc. logo" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(organization)} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="scroll-progress" aria-hidden="true"></div>
+      <div class="nav-shell wrap">
+        <a href="/" class="brand" aria-label="Tech Judge home"><img src={logo} width="934" height="152" alt="Tech Judge Inc." /></a>
+        <nav class="desktop-nav" aria-label="Main navigation">
+          {groups.map(([label,href,items]) => <details class="nav-group"><summary>{label}<span aria-hidden="true">⌄</span></summary><div class="nav-pop"><a class="nav-overview" href={href as string}>{label} overview <span aria-hidden="true">↗</span></a>{(items as string[][]).map(([name,link])=><a href={link} aria-current={path===link?'page':undefined}>{name}</a>)}</div></details>)}
+          <a class="pricing-nav" href="/plan-your-it" aria-current={path==='/plan-your-it'?'page':undefined}>Pricing</a>
+        </nav>
+        <a class="button button-small nav-cta" href="/contact-us">Let’s talk <span aria-hidden="true">↗</span></a>
+        <details class="mobile-nav"><summary aria-label="Open navigation"><span></span><span></span></summary><nav aria-label="Mobile navigation">{groups.map(([label,href,items])=><div><a href={href as string} class="mobile-label">{label}</a>{(items as string[][]).map(([name,link])=><a href={link}>{name}</a>)}</div>)}<a href="/plan-your-it" class="mobile-label">Pricing</a><a href="/contact-us" class="button">Book a consultation ↗</a></nav></details>
+      </div>
+    </header>
+    <main id="main"><slot /></main>
+    <footer class="site-footer">
+      <div class="wrap footer-top"><div><a href="/" class="brand" aria-label="Tech Judge home"><img src={logo} width="934" height="152" alt="Tech Judge Inc." loading="lazy" /></a><p>One team. Every connection.</p><a href="tel:+18182132050" class="footer-phone">(818) 213-2050</a><a href="mailto:info@techjudge.com">info@techjudge.com</a><p>21943 Plummer St.<br/>Chatsworth, CA 91311</p></div><div><h2>Expertise</h2>{services.map(([name,href])=><a href={href}>{name}</a>)}</div><div><h2>Company</h2>{company.slice(0,3).map(([name,href])=><a href={href}>{name}</a>)}<a href="/contact-us">Contact</a><a href="/contact-us#client-support">Existing client support</a></div><div><h2>Built on trust</h2><p>California C7<br/>License #1142144</p><a href="https://share.google/sPEeP7n79I2hqWTM3" target="_blank" rel="noopener noreferrer">Find us on Google <span aria-hidden="true">↗</span></a></div></div>
+      <div class="wrap footer-bottom"><span>© {new Date().getFullYear()} Tech Judge Inc.</span><div><a href="/privacy-policy">Privacy policy</a><a href="/terms-of-service">Terms of service</a></div>{staging && <span class="preview-label">Private review · Staging</span>}</div>
+    </footer>
+    <BackgroundMotion />
+    <ScrollExperience />
+    <style>.pricing-nav{font-size:.875rem;align-self:center;padding-block:20px}.pricing-nav:hover,.pricing-nav[aria-current=page]{color:var(--gold)}</style>
+    <script>
+      document.addEventListener('click', e => {
+        document.querySelectorAll<HTMLDetailsElement>('.nav-group[open],.mobile-nav[open]').forEach(el => { if (!el.contains(e.target as Node)) el.open=false; });
+      });
+      document.querySelectorAll<HTMLDetailsElement>('.nav-group').forEach(el=>el.addEventListener('toggle',()=>{if(el.open)document.querySelectorAll<HTMLDetailsElement>('.nav-group').forEach(other=>{if(other!==el)other.open=false;});}));
+      document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll<HTMLDetailsElement>('.nav-group[open],.mobile-nav[open]').forEach(el=>{el.open=false;el.querySelector('summary')?.focus();});}});
+    </script>
+  </body>
+</html>

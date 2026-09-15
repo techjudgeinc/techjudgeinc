@@ -1,0 +1,28 @@
+---
+import {logoMark} from '../lib/assets';
+const {kind='network',caption='One connected environment'}=Astro.props;
+---
+<div class={'technology-graphic graphic-'+kind}>
+ <div class="graphic-grid" aria-hidden="true"></div>
+ <svg viewBox="0 0 500 380" fill="none" aria-hidden="true" class="tech-diagram">
+ {kind==='security'? <>
+   <circle class="diagram-orbit" cx="250" cy="190" r="142" stroke="currentColor" strokeDasharray="3 12"/>
+   <path class="diagram-wire" d="M250 65 350 107V190Q350 260 250 315Q150 260 150 190V107Z"/>
+   <path class="diagram-flow" d="M250 65 350 107V190Q350 260 250 315Q150 260 150 190V107Z"/>
+   <rect x="215" y="168" width="70" height="60" rx="12" class="diagram-node"/>
+   <path d="M230 168v-18a20 20 0 0 1 40 0v18M250 190v16" class="diagram-accent"/>
+   {[100,400].map((x,i)=><g class="diagram-beacon" style={'--d:'+i+'s'}><circle cx={x} cy="190" r="6" fill="currentColor"/><circle cx={x} cy="190" r="17" stroke="currentColor" opacity=".3"/></g>)}
+ </>:kind==='home'? <>
+   <path class="diagram-wire" d="M85 190 250 64 415 190M120 163V310H380V163M165 310V210H235V310M280 212H335V260H280Z"/>
+   <path class="diagram-flow" d="M85 190 250 64 415 190M120 163V310H380V163"/>
+   {[165,250,335].map((x,i)=><g class="diagram-beacon" style={'--d:'+i*.7+'s'}><circle cx={x} cy={i===1?135:180} r="6" fill="currentColor"/><circle cx={x} cy={i===1?135:180} r="20" stroke="currentColor" opacity=".3"/></g>)}
+   <path class="diagram-accent diagram-breathe" d="M212 92Q250 58 288 92M224 104Q250 82 276 104"/>
+ </>:<>
+   {[[100,95],[400,95],[75,285],[425,285],[250,48],[250,335]].map(([x,y],i)=><g><path class="diagram-wire" d={`M250 190 L${x} ${y}`}/><path class="diagram-flow" style={'--d:'+i*.6+'s'} d={`M250 190 L${x} ${y}`}/><rect x={x-22} y={y-18} width="44" height="36" rx="10" class="diagram-node"/><circle cx={x} cy={y} r="4" class="diagram-beacon" style={'--d:'+i*.4+'s'} fill="currentColor"/></g>)}
+   <circle cx="250" cy="190" r="70" class="diagram-orbit" stroke="currentColor" strokeDasharray="2 8"/>
+   <rect x="203" y="153" width="94" height="74" rx="20" class="diagram-node diagram-hub"/>
+   <image href={logoMark} x="232" y="165" width="36" height="48" preserveAspectRatio="xMidYMid meet"/>
+ </>}
+ </svg>
+ <div class="graphic-caption"><span class="graphic-status" aria-hidden="true"></span>{caption}<span aria-hidden="true">↗</span></div>
+</div>

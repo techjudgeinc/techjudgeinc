@@ -1,0 +1,10 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import baseline from '../data/baseline.json';
+---
+<SiteLayout path="/careers" {...baseline['/careers']}>
+  <PageHeader eyebrow="Careers at Tech Judge" title="Good people." accent="Meaningful work." intro="Build your career with a team that connects IT, infrastructure and home technology and takes pride in the details." />
+  <section class="section light"><div class="wrap split"><div><p class="eyebrow">Why Tech Judge?</p><h2>A broader world<br/><em>of technology.</em></h2><p class="lead">Work alongside specialists in managed IT, C7 infrastructure and luxury automation. Bring your perspective, keep learning and help solve the real problems behind connected systems.</p></div><div class="principles">{[['01','Total ownership','Take responsibility for the work and the people relying on it.'],['02','Uncompromising quality','Build clean, reliable solutions with care for the details.'],['03','Team-first collaboration','Bring disciplines together and make the whole team stronger.'],['04','Constant curiosity','Keep learning as technology and client needs evolve.']].map(([n,t,p])=><div><span>{n}</span><div><h3>{t}</h3><p>{p}</p></div></div>)}</div></div></section>
+  <section class="section"><div class="wrap narrow"><p class="eyebrow">Start a conversation</p><h2>Tell us what<br/><em>you bring.</em></h2><p class="lead">Interested in joining Tech Judge? Send your resume and a short introduction to our careers team. Let us know the kind of work you are interested in.</p><a href="mailto:careers@techjudge.com" class="button spaced">Email our careers team ↗</a><p class="subnote">careers@techjudge.com</p></div></section>
+</SiteLayout>

@@ -1,0 +1,12 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import ContactBand from '../components/ContactBand.astro';
+import {details} from '../data/content';
+import {asset} from '../lib/assets';
+---
+<SiteLayout path="/services" title="Technology Services for Business & Home | Tech Judge Inc." description="Explore Tech Judge’s managed IT, cybersecurity, C7 infrastructure, security and luxury smart-home services. One team for the complete technology picture.">
+  <PageHeader eyebrow="Our expertise" title="Every part connected." accent="Every detail considered." intro="Three complementary disciplines. One team to design, install and support the technology behind your business, building or home." />
+  <section class="light hub-section"><div class="wrap">{details.map((p,i)=><article class="hub-row"><div class="hub-image"><img src={asset(p.image)} width="650" height="450" loading="lazy" alt={p.alt}/></div><div><p class="eyebrow">0{i+1} / {p.name}</p><h2>{p.headline}<br/><em>{p.accent}</em></h2><p class="lead">{p.intro}</p><ul class="scope-tags">{p.sections.slice(0,5).map(s=><li>{s.title}</li>)}</ul><a class="text-link" href={'/'+p.slug}>Explore {p.name.toLowerCase()} <span aria-hidden="true">↗</span></a></div></article>)}</div></section>
+  <ContactBand heading="Not sure where to start?" text="Tell us what you’re trying to accomplish. We’ll bring the right expertise to the conversation." />
+</SiteLayout>

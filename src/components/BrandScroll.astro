@@ -1,0 +1,19 @@
+---
+import {brandAssets} from '../lib/assets';
+const seen = new Set<string>();
+const brands = brandAssets.filter(a => {
+ const name = a.alt.toLowerCase().replace(/[^a-z0-9]/g,'').replace('communications','communication');
+ if(seen.has(name)) return false;
+ seen.add(name);
+ return true;
+}).slice(0,12);
+const rows=[brands.slice(0,4),brands.slice(4,8),brands.slice(8,12)];
+---
+<section class="brand-scroll" aria-label="Technology brands we work with">
+ <div class="wrap"><h2>Good technology starts<br/>with the right tools.</h2><a class="text-link" href="/partners">Explore the brands we work with</a></div>
+ {rows.map((row,index)=><div class:list={['brand-viewport',{'brand-reverse':index===1}]} data-no-reveal>
+  <div class="brand-track">
+   {[false,true].map(copy=><div class="brand-run" aria-hidden={copy?'true':undefined}>{row.map(brand=><div class="brand-logo"><img src={'/assets/'+brand.file} alt={copy?'':brand.alt} width="160" height="60" loading="lazy"/></div>)}</div>)}
+  </div>
+ </div>)}
+</section>

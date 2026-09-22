@@ -1,4 +1,4 @@
 ---
-const { heading='One conversation. A clearer way forward.', text='Tell us what you’re planning or what isn’t working. We’ll help you find the right next step.', topic='' }=Astro.props;
+const {heading='Tell us what’s not working.',text='Or what you’re ready to build. We’ll talk through your needs, your timeline and the right next step.',topic=''}=Astro.props;
 ---
-<section class="contact-band"><div class="wrap contact-band-inner"><div><p class="eyebrow">Let’s connect</p><h2>{heading}</h2><p>{text}</p></div><a class="button" href={'/contact-us'+(topic?'?service='+encodeURIComponent(topic):'')}>Talk to our team <span aria-hidden="true">↗</span></a></div></section>
+<section class="contact-band"><div class="wrap contact-band-inner"><div><h2>{heading}</h2><p>{text}</p></div><div class="contact-band-actions"><a class="button" href={'/contact-us'+(topic?'?service='+encodeURIComponent(topic):'')}>Start a conversation</a><a href="tel:+18182132050">(818) 213-2050</a></div></div></section>

@@ -1,0 +1,11 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import ContactBand from '../components/ContactBand.astro';
+import {asset} from '../lib/assets';
+---
+<SiteLayout path="/projects" title="Our Work | Managed IT & Installation Projects | Tech Judge" description="See how Tech Judge supports multi-office businesses, escrow and title teams with ongoing IT, office buildouts, networks and security.">
+ <PageHeader eyebrow="Our work" title="The work is the introduction." intro="Office networks, everyday IT support and installations that grow into longer relationships. A closer look at what we take care of."/>
+ <section class="section light"><div class="wrap"><div class="case-layout" data-reveal><div class="case-image"><img src={asset('032.png')} width="900" height="650" alt="An office team collaborating" loading="lazy"/><span class="image-disclosure">Illustrative image from the existing website</span></div><div class="case-copy"><h2>Pinnacle Estate Properties</h2><p class="case-subtitle">Their offices.<br/>Their agents.<br/>Our ongoing responsibility.</p><p>Network management, email, VoIP, agent support and office infrastructure across a multi-location real estate business.</p><a class="text-link spaced" href="/projects/pinnacle-estate-properties">See the scope of our work</a></div></div><div class="project-list"><article data-reveal><h2>RidgeGate Escrow</h2><p>Support for the systems behind an escrow office, with ongoing management and office buildout work.</p><ul><li>Network and server management</li><li>Email administration and email security</li><li>Office infrastructure and buildouts</li></ul></article><article data-reveal><h2>Priority Title</h2><p>Help for the people using the computers and care for the infrastructure connecting their offices.</p><ul><li>Computer troubleshooting and user support</li><li>Network infrastructure and servers</li><li>Office buildouts</li></ul></article></div><p class="review-note">Private review: named client features require final client approval before publication. Project photography and the planned video testimonial will be added when approved.</p></div></section>
+ <ContactBand heading="Have a project we should look at?"/>
+</SiteLayout>

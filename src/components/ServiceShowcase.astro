@@ -1,0 +1,48 @@
+---
+import {asset} from '../lib/assets';
+const services=[
+ {id:'business',name:'Managed IT & Cybersecurity',short:'Your business',heading:'Your own IT team.\nAlready up to speed.',copy:'Your people need help they can count on. We manage the computers, networks, email and security behind their working day.',image:'032.png',alt:'People working together in a business office',href:'/it-and-cyber-security',action:'Explore managed IT',scope:[['People','Everyday support & new-user setup'],['Systems','Networks, servers & cloud platforms'],['Protection','Email security & endpoint protection']]},
+ {id:'building',name:'Infrastructure & Security',short:'Your building',heading:'The right foundation.\nBuilt into the details.',copy:'Cabling, Wi-Fi, cameras and door access, designed for your site and installed with care.',image:'064.png',alt:'Structured blue network cabling connected to switches',href:'/infrastructure-and-security',action:'Plan your installation',scope:[['Connect','Structured cabling, racks & Wi-Fi'],['See','Camera placement & surveillance'],['Control','Door access & permissions']]},
+ {id:'home',name:'Luxury Smart Homes',short:'Your home',heading:'A smarter home.\nA simpler everyday.',copy:'A strong connection in every room. Lighting, music and security that fit your routines, without getting in the way.',image:'078.png',alt:'Light-filled contemporary residential living room',href:'/luxury-smart-home',action:'Explore smart homes',scope:[['Foundation','Whole-home networking'],['Atmosphere','Lighting, shades & home control'],['Experience','Audio, video & security']]}
+];
+const scopePaths: Record<string,string[]> = {
+ business:['M12 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6M5 21v-3a7 7 0 0 1 14 0v3','M3 4h18v12H3ZM12 16v4M7 20h10','m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6Zm-4 9 3 3 5-6'],
+ building:['M3 5h18v7H3ZM6 8h1m3 0h1m3 0h1M12 12v6M5 21v-3h14v3','M3 6h14v11H3ZM17 9l4-2v10l-4-2M7 6V4h6v2','M5 21V3h14v18M14 12h1M3 21h18'],
+ home:['m3 11 9-8 9 8M5 10v11h14V10M9 21v-7h6v7','M9 17h6M10 21h4M8 13a6 6 0 1 1 8 0l-1 4H9Z','M9 18V5l11-2v13M9 8l11-2M9 18a3 3 0 1 1-3-3h3M20 16a3 3 0 1 1-3-3h3']
+};
+---
+<div class="showcase-shell wrap" id="explore" data-showcase role="region" aria-roledescription="carousel" aria-label="Our services">
+ <div class="showcase-body" data-no-reveal>{services.map((s,i)=><section class="service-scene" id={'panel-'+s.id} role="group" aria-roledescription="slide" aria-label={s.name} data-service-slide hidden={i!==0}>
+  <img class="scene-photo" src={asset(s.image)} width="1200" height="700" alt={s.alt} loading={i===0?'eager':'lazy'}/>
+  <div class="scene-content"><p class="scene-title">{s.name}</p><h2>{s.heading.split('\n').map((line,j)=><>{j>0&&<br/>}{line}</>)}</h2><p>{s.copy}</p><a class="button button-glass" href={s.href}>{s.action}</a></div>
+  <div class="scene-scope">{s.scope.map(([title,text],scopeIndex)=><div><span class="scope-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d={scopePaths[s.id][scopeIndex]}/></svg></span><div><strong>{title}</strong><span>{text}</span></div></div>)}</div>
+ </section>)}</div>
+ <div class="showcase-controls" data-no-reveal><div><button type="button" data-service-prev aria-label="Previous service">←</button><div class="service-dots" role="group" aria-label="Choose a service">{services.map((s,i)=><button type="button" data-service-dot={i} aria-label={s.name} aria-pressed={i===0?'true':'false'}><span></span></button>)}</div><button type="button" data-service-next aria-label="Next service">→</button><button type="button" data-service-pause aria-label="Pause automatic services" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path class="service-pause-icon" d="M8 5v14M16 5v14"/><path class="service-play-icon" d="m8 5 11 7-11 7Z"/></svg></button></div></div>
+ <noscript><p class="showcase-noscript">Explore all our services: <a href="/it-and-cyber-security">Managed IT</a>, <a href="/infrastructure-and-security">Infrastructure & Security</a>, <a href="/luxury-smart-home">Smart Homes</a>.</p></noscript>
+</div>
+<script>
+ document.querySelectorAll<HTMLElement>('[data-showcase]').forEach(root=>{
+  const slides=[...root.querySelectorAll<HTMLElement>('[data-service-slide]')];
+  const dots=[...root.querySelectorAll<HTMLButtonElement>('[data-service-dot]')];
+  const pause=root.querySelector<HTMLButtonElement>('[data-service-pause]')!;
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  let current=0, stopped=false, focused=false, hovered=false, visible=false;
+  const sync=()=>{const off=stopped||reduced.matches||document.documentElement.dataset.motion==='paused';pause.setAttribute('aria-label',off?'Play automatic services':'Pause automatic services');pause.setAttribute('aria-pressed',String(off));pause.disabled=reduced.matches||document.documentElement.dataset.motion==='paused';};
+  const render=()=>{slides.forEach((slide,i)=>{slide.hidden=i!==current;slide.inert=i!==current;});dots.forEach((dot,i)=>dot.setAttribute('aria-pressed',String(i===current)));};
+  const select=(i:number)=>{current=(i+slides.length)%slides.length;render();};
+  root.querySelector('[data-service-prev]')!.addEventListener('click',()=>select(current-1));
+  root.querySelector('[data-service-next]')!.addEventListener('click',()=>select(current+1));
+  dots.forEach((dot,i)=>dot.addEventListener('click',()=>select(i)));
+  pause.addEventListener('click',()=>{stopped=!stopped;sync();});
+  root.addEventListener('focusin',()=>focused=true);
+  root.addEventListener('focusout',event=>focused=root.contains(event.relatedTarget as Node));
+  root.addEventListener('mouseenter',()=>hovered=true);
+  root.addEventListener('mouseleave',()=>hovered=false);
+  reduced.addEventListener('change',sync);
+  new MutationObserver(sync).observe(document.documentElement,{attributes:true,attributeFilter:['data-motion']});
+  new IntersectionObserver(entries=>visible=entries[0].isIntersecting,{threshold:.3}).observe(root);
+  const timer=window.setInterval(()=>{if(visible&&!focused&&!hovered&&!stopped&&!reduced.matches&&!document.hidden&&document.documentElement.dataset.motion!=='paused')select(current+1);},8000);
+  window.addEventListener('pagehide',()=>clearInterval(timer),{once:true});
+  render();sync();
+ });
+</script>

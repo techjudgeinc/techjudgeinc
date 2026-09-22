@@ -1,0 +1,73 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import {logo,logoMark} from '../lib/assets';
+import {edition,brandSections,palette,accents,typeRules,aiPrompt,brandMarkdown,assets} from '../data/brand';
+import '../styles/brand-guide.css';
+const groups = [...new Set(brandSections.map(s=>s.group))];
+---
+<SiteLayout path="/brand" title="Brand Guidelines | Tech Judge" description="The Tech Judge source of truth for strategy, messaging, visual identity and consistent brand use across every channel. Includes a complete LLM-ready guide." utility={true} standalone={true}>
+ <div class="brand-guidelines" data-no-reveal>
+  <aside class="bible-sidebar" aria-label="Brand guide navigation">
+   <a class="bible-wordmark" href="#cover" aria-label="Tech Judge brand guidelines cover"><img src={logo} width="934" height="152" alt="Tech Judge Inc."/></a>
+   <div class="sidebar-title"><span>Brand Guidelines</span><span>v{edition.version}</span></div>
+   <details class="bible-contents" open>
+    <summary>Contents <span aria-hidden="true">⌄</span></summary>
+    <nav aria-label="Brand sections">
+     <a href="#cover" aria-current="location">Cover <span aria-hidden="true">↗</span></a>
+     {groups.map(group=><div class="nav-chapter"><p>{group}</p>{brandSections.filter(s=>s.group===group).map(s=><a href={'#'+s.id}><span class="nav-number">{String(brandSections.indexOf(s)+1).padStart(2,'0')}</span>{s.title}</a>)}</div>)}
+    </nav>
+   </details>
+   <div class="sidebar-download"><a href="/brand/guide.md" download="tech-judge-brand-guidelines.md">Download brand guidelines <span aria-hidden="true">↓</span></a><span>Markdown · For your team &amp; LLMs</span></div>
+  </aside>
+  <div class="bible-content">
+   <header class="bible-cover" id="cover" data-brand-section>
+    <div class="bible-kicker"><span>Tech Judge / The brand system</span><span class="bible-badge">Unlisted reference</span></div>
+    <div class="cover-symbol" aria-hidden="true"><img src={logoMark} width="64" height="64" alt=""/><span></span></div>
+    <h1>Tech Judge.<br/><em>Brand Guidelines.</em></h1>
+    <p class="cover-description">One identity. Every expression.<br/>The shared reference for how we look, speak and show up — from the next proposal to the next prompt.</p>
+    <dl class="cover-meta"><div><dt>Our promise</dt><dd>{edition.tagline}</dd></div><div><dt>Edition</dt><dd>{edition.version} / September 2026</dd></div><div><dt>Inside</dt><dd>Strategy · Identity · Usage</dd></div></dl>
+    <div class="bible-actions"><a class="button" href="/brand/guide.md" download="tech-judge-brand-guidelines.md">Download the full guide <span aria-hidden="true">↓</span></a><a class="text-link" href="#ai">Use with your LLM</a></div>
+   </header>
+   {brandSections.map((section,i)=><section class="bible-section" id={section.id} data-brand-section aria-labelledby={section.id+'-title'}>
+    <div class="section-index"><span>{section.group}</span><span>{String(i+1).padStart(2,'0')} / {String(brandSections.length).padStart(2,'0')}</span></div>
+    <h2 id={section.id+'-title'}>{section.title}</h2><p class="bible-intro">{section.intro}</p>
+    {section.id==='logo'&&<div class="bible-logos"><figure class="logo-dark"><img src={logo} width="934" height="152" alt="Tech Judge white wordmark on black"/><figcaption>Primary / Dark background</figcaption></figure><figure class="logo-light"><img src={logo} width="934" height="152" alt="Tech Judge charcoal wordmark on cream"/><figcaption>Primary / Light background</figcaption></figure></div>}
+    {section.id==='color'&&<><div class="bible-swatches">{palette.map(c=><article class="bible-swatch"><div class="color-pair" aria-hidden="true"><span style={'background:'+c.dark}></span><span style={'background:'+c.light}></span></div><h3>{c.name}</h3><code>{c.token}</code><dl><div><dt>Dark</dt><dd>{c.dark}</dd></div><div><dt>Light</dt><dd>{c.light}</dd></div></dl><p>{c.use}</p></article>)}</div><div class="accent-strip">{accents.map(c=><div><i style={'background:'+c.value} aria-hidden="true"></i><span>{c.name}<code>{c.value}</code></span></div>)}</div></>}
+    {section.id==='typography'&&<><div class="bible-type"><span>Inter Variable / 450</span><p>Aa Bb Cc <em>0123</em></p><div>Your technology.<br/><em>Our responsibility.</em></div></div><div class="bible-table" role="region" aria-label="Typography specifications" tabindex="0"><table><thead><tr>{['Role','Typeface','Weight','Web size','Leading','Tracking'].map(h=><th scope="col">{h}</th>)}</tr></thead><tbody>{typeRules.map(row=><tr>{row.map((cell,j)=>j===0?<th scope="row">{cell}</th>:<td>{cell}</td>)}</tr>)}</tbody></table></div></>}
+    {section.paragraphs?.map(p=><p class="bible-paragraph">{p}</p>)}
+    {section.table&&<div class="bible-table" role="region" aria-label={section.title+' reference'} tabindex="0"><table><thead><tr>{section.table.heads.map(h=><th scope="col">{h}</th>)}</tr></thead><tbody>{section.table.rows.map(row=><tr>{row.map((cell,j)=>j===0?<th scope="row">{cell}</th>:<td>{cell}</td>)}</tr>)}</tbody></table></div>}
+    {section.rules&&<div class:list={['bible-rules',{'has-avoid':!!section.avoid}]}><div><h3>{section.avoid?'Use this approach':'Working rules'}</h3><ul>{section.rules.map(rule=><li>{rule}</li>)}</ul></div>{section.avoid&&<div class="avoid-rules"><h3>Keep out of the work</h3><ul>{section.avoid.map(rule=><li>{rule}</li>)}</ul></div>}</div>}
+    {section.id==='logo'&&<div class="asset-downloads"><img src={logoMark} width="48" height="48" alt="Tech Judge compact mark"/>{assets.map(a=><a class="text-link" href={a.path} download>{a.label} ↓</a>)}</div>}
+    {section.id==='layout'&&<figure class="component-demo"><span class="demo-label">Component specimen / Visual reference</span><h3>One team.<br/>The whole picture.</h3><p>Technology for your business, your building and your home.</p><div><span class="button">Let’s talk</span><span class="button button-ghost">Our work</span></div><figcaption>Primary and secondary action treatments. These are visual samples.</figcaption></figure>}
+    {section.id==='ai'&&<><div class="resource-grid"><a href="/brand/guide.md" download="tech-judge-brand-guidelines.md"><span>01 / Complete reference</span><strong>Brand Guidelines.md ↓</strong><p>All sections, exact values and the starter prompt.</p></a><a href="/brand/tokens.json" download="tech-judge-brand-tokens.json"><span>02 / Design tokens</span><strong>Brand tokens.json ↓</strong><p>Colors, type specifications, spacing and asset paths.</p></a></div><div class="prompt-header"><h3>Start with this prompt</h3><button type="button" class="button button-ghost" data-copy="prompt">Copy prompt</button></div><pre class="prompt-text" id="brand-prompt">{aiPrompt}</pre><div class="bible-actions"><button class="button" type="button" data-copy="guide">Copy the full brand guide</button><button class="text-link print-guide" type="button">Print / Save as PDF</button></div><p id="brand-copy-status" role="status" aria-live="polite"></p><script id="brand-markdown" type="application/json" set:html={JSON.stringify(brandMarkdown()).replaceAll('<','\\u003c')}/></>}
+   </section>)}
+   <footer class="bible-end"><img src={logoMark} width="36" height="36" alt=""/><p>Good technology.<br/><span>People who take care of it.</span></p><small>Tech Judge Inc. / v{edition.version}</small></footer>
+  </div>
+ </div>
+</SiteLayout>
+<script>
+ const sectionLinks = [...document.querySelectorAll<HTMLAnchorElement>('.bible-contents nav a')];
+ const chapters = [...document.querySelectorAll<HTMLElement>('[data-brand-section]')];
+ let pending = false;
+ const syncSection = () => {
+  const active = [...chapters].reverse().find(section=>section.getBoundingClientRect().top<=160)||chapters[0];
+  sectionLinks.forEach(link=>{if(link.hash==='#'+active?.id)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');});
+  pending=false;
+ };
+ window.addEventListener('scroll',()=>{if(!pending){pending=true;requestAnimationFrame(syncSection);}},{passive:true});
+ syncSection();
+ const contents = document.querySelector<HTMLDetailsElement>('.bible-contents')!;
+ const mobile = matchMedia('(max-width: 800px)');
+ const syncMenu = () => {contents.open=!mobile.matches;};
+ syncMenu();mobile.addEventListener('change',syncMenu);
+ sectionLinks.forEach(link=>link.addEventListener('click',()=>{if(mobile.matches){contents.open=false;const target=document.getElementById(link.hash.slice(1));target?.setAttribute('tabindex','-1');target?.focus({preventScroll:true});}}));
+ document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach(button=>button.addEventListener('click',async()=>{
+  const status=document.getElementById('brand-copy-status')!;
+  const text=button.dataset.copy==='prompt'?document.getElementById('brand-prompt')!.textContent!:JSON.parse(document.getElementById('brand-markdown')!.textContent!);
+  try{await navigator.clipboard.writeText(text);status.textContent=button.dataset.copy==='prompt'?'Starter prompt copied. Attach the full guide with your brief.':'Full brand guide copied. Paste it into your LLM conversation or project knowledge.';}
+  catch{status.textContent='Clipboard unavailable. Download the Markdown guide, or select and copy the prompt text.';}
+ }));
+ document.querySelector('.print-guide')?.addEventListener('click',()=>window.print());
+</script>
+
+

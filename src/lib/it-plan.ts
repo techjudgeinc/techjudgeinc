@@ -4,7 +4,7 @@ export const planQuestions = [
  {key:'management',label:'Service level',options:[['support','Essential','Monitoring, patching and help desk',96],['managed','Managed','Full management and security operations',148],['strategy','Complete','Full management, plus strategy and vCIO',206]]},
  {key:'security',label:'Cybersecurity',options:[['core','Standard','Core endpoint and email controls',0],['advanced','Advanced','EDR, identity hardening and training',24],['complete','Complete','Managed detection, response and review',46]]},
  {key:'cloud',label:'Cloud platform',options:[['microsoft','Microsoft 365','Microsoft 365 administration',9],['azure','Azure','Azure administration',20],['hybrid','Hybrid','Cloud and on-site systems',26],['unsure','Other / none yet','Other platforms or a new environment',11]]},
- {key:'coverage',label:'Support coverage',options:[['business','Business hours','Monday to Friday, standard hours',0],['extended','Extended','Early, late and weekend coverage',13],['continuous','24/7','Around-the-clock coverage',28]]},
+ {key:'coverage',label:'Support coverage',options:[['business','Business hours','Usual hours: 8am to 5pm Pacific',0],['extended','Extended','Early, late and weekend coverage',13],['continuous','24/7','Around-the-clock coverage',28]]},
  {key:'network',label:'Network & infrastructure',options:[['basic','Basic','Existing equipment, monitored',0],['managed','Managed','Firewall, switching and Wi-Fi managed',15],['advanced','Advanced','Multi-site, segmented and redundant',30]]}
 ] as const;
 export const formatMoney=(value:number)=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(value);

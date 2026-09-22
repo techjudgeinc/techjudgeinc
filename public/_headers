@@ -1,0 +1,9 @@
+/brand
+  X-Robots-Tag: noindex, nofollow
+/brand.html
+  X-Robots-Tag: noindex, nofollow
+/brand/
+  X-Robots-Tag: noindex, nofollow
+
+/brand/*
+  X-Robots-Tag: noindex, nofollow

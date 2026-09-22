@@ -1,0 +1,14 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import ContactBand from '../../components/ContactBand.astro';
+import {asset} from '../../lib/assets';
+const scope=[['Networks across locations','We manage the network environment across Pinnacle’s locations, providing a consistent team to look after the infrastructure.'],['Help for real estate agents','We help agents with IT issues so they have somewhere to turn when computers or applications get in the way.'],['Email and phone systems','Email administration and VoIP are part of the broader technology relationship, not separate problems for the client to coordinate.'],['The next office buildout','Our work includes the cabling, racks and network infrastructure behind new office spaces. We support the environment after installation, too.']];
+---
+<SiteLayout path="/projects/pinnacle-estate-properties" title="Pinnacle Estate Properties: Multi-Office IT | Tech Judge" description="How Tech Judge supports Pinnacle Estate Properties with network management, agent IT support, email, VoIP and office infrastructure.">
+ <PageHeader eyebrow="Pinnacle Estate Properties" title="An IT team for the whole business." intro="For Pinnacle Estate Properties, Tech Judge’s role runs from helping an individual agent to building the network inside an office."/>
+ <div class="wrap"><img class="case-page-photo" src={asset('032.png')} width="1200" height="650" alt="Illustrative office team working together"/><p class="draft-note">Illustrative image. Client feature is a private draft pending publication approval.</p></div>
+ <section class="section"><div class="wrap split"><h2>More than one location.<br/>More than one kind of help.</h2><div class="prose"><p>A multi-office business needs both day-to-day support and someone looking after the systems behind it. Pinnacle relies on Tech Judge for both.</p><p>We manage their networks across locations, help their agents with IT issues and handle systems including email and VoIP. When an office needs to be built out, we also take care of its cabling, racks and network infrastructure.</p><p>It’s an ongoing IT relationship, not a standalone installation.</p></div></div></section>
+ <section class="section light"><div class="wrap"><h2>What we take care of</h2><div class="process-grid">{scope.map(([title,text])=><div data-reveal><h3>{title}</h3><p>{text}</p></div>)}</div></div></section>
+ <ContactBand heading="Need a team across your offices?" topic="Managed IT & Cybersecurity"/>
+</SiteLayout>

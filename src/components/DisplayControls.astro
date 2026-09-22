@@ -1,0 +1,31 @@
+---
+const {staging=false}=Astro.props;
+const palettes=[
+ {id:'original',name:'Current gold',note:'Keep the current palette for comparison.',colors:['#08090C','#E0BC76','#516C91','#F3F4F6']},
+ {id:'midnight',name:'Midnight & Champagne',note:'My pick: technical credibility with a premium residential feel.',colors:['#0B1220','#DFC28D','#739CCF','#F5F6FA']},
+ {id:'blue',name:'Graphite & Electric Blue',note:'A sharper, more technology-first direction.',colors:['#0B0F17','#85B5FF','#4D73E8','#F5F7FC']},
+ {id:'copper',name:'Obsidian & Copper',note:'Warm, architectural and especially suited to homes and interiors.',colors:['#120F10','#E7AB86','#879CC4','#FAF5F1']},
+ {id:'violet',name:'Ink & Iris',note:'No gold. Ink black, soft violet and cool blue for a distinctive modern identity.',colors:['#100F18','#B8ABFF','#739CE8','#F6F4FC']},
+ {id:'silver',name:'Carbon & Platinum',note:'No gold. Charcoal, silver and restrained steel blue. Quiet and architectural.',colors:['#101214','#D5DEE5','#7995AA','#F5F7F8']}
+];
+---
+<div class="display-controls" role="region" aria-label="Display preferences">
+ {staging&&<details class="palette-picker"><summary>Colors</summary><div class="palette-panel"><h2>Find your Tech Judge palette.</h2><p>Private design preview. Try each in dark and light mode.</p><div class="palette-options" role="group" aria-label="Website color palette">{palettes.map(p=><button type="button" data-palette-choice={p.id} aria-pressed={p.id==='original'?'true':'false'}><span class="palette-name">{p.name}{p.id==='midnight'&&<small>Recommended</small>}</span><span class="palette-swatches" aria-hidden="true">{p.colors.map(color=><i style={'background:'+color}></i>)}</span><span class="palette-description">{p.note}</span><span class="palette-hex">{p.colors.join(' · ')}</span></button>)}</div><p id="palette-status" role="status" aria-live="polite">Previewing current gold.</p></div></details>}
+ <button class="motion-toggle" type="button" aria-label="Pause background animation" aria-pressed="false" title="Pause background animation"><svg class="pause-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg><svg class="play-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m8 5 11 7-11 7Z"/></svg></button>
+ <button class="theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="false"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg></button>
+</div>
+<script>
+ const root=document.documentElement;
+ const choices=Array.from(document.querySelectorAll<HTMLButtonElement>('[data-palette-choice]'));
+ const syncPalette=()=>{const selected=root.dataset.palette||'original';choices.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.paletteChoice===selected)));const active=choices.find(button=>button.dataset.paletteChoice===selected);const status=document.querySelector('#palette-status');if(status&&active)status.textContent='Previewing '+active.querySelector('.palette-name')?.childNodes[0].textContent+'.';document.querySelector('meta[name="theme-color"]')?.setAttribute('content',getComputedStyle(root).getPropertyValue('--ink').trim());};
+ choices.forEach(button=>button.addEventListener('click',()=>{root.dataset.palette=button.dataset.paletteChoice!;try{localStorage.setItem('tj-palette',root.dataset.palette)}catch{}syncPalette();}));
+ syncPalette();
+ const motion=document.querySelector<HTMLButtonElement>('.motion-toggle')!;
+ const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+ const syncMotion=()=>{const paused=root.dataset.motion==='paused'||reduced.matches;motion.setAttribute('aria-pressed',String(paused));const label=reduced.matches?'Animation off: reduced motion preference':paused?'Resume background animation':'Pause background animation';motion.setAttribute('aria-label',label);motion.title=label;motion.disabled=reduced.matches;};
+ motion.addEventListener('click',()=>{root.dataset.motion=root.dataset.motion==='paused'?'playing':'paused';try{localStorage.setItem('tj-motion',root.dataset.motion)}catch{}syncMotion();});
+ reduced.addEventListener('change',syncMotion);syncMotion();
+ const picker=document.querySelector<HTMLDetailsElement>('.palette-picker');
+ document.addEventListener('click',event=>{if(picker?.open&&!picker.contains(event.target as Node))picker.open=false;});
+ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&picker?.open){picker.open=false;picker.querySelector('summary')?.focus();}});
+</script>

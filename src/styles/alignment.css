@@ -1,0 +1,14 @@
+/* One shared page grid. Keep readable text measures, not narrower card shells. */
+:root{--page-gutter:40px;--card-inset:38px}
+.wrap,.contact-band{width:min(var(--max),calc(100% - var(--page-gutter)*2));margin-inline:auto}
+.launch-hero .showcase-shell{max-width:var(--max);width:min(var(--max),calc(100% - var(--page-gutter)*2))}
+.launch-hero>.proof-ribbon{padding-inline:0}
+.contact-band{padding-inline:var(--card-inset)}
+.contact-band .contact-band-inner{width:100%;max-width:none}
+.ownership-grid>.connection-card.ownership-editorial,.ownership-grid>.care-card,.ownership-grid>.scope-card,
+.client-stack>.client-panel,.client-words>.wrap{padding-inline:var(--card-inset)}
+.launch-hero .showcase-shell .service-scene{padding-inline:var(--card-inset)}
+/* Grid children must shrink to their assigned column, including long text. */
+:is(.ownership-grid,.client-stack,.approach-layout,.visit-section,.split,.scope-board,.process-grid,.industry-grid,.project-list,.contact-layout,.form-grid)>*{min-width:0}
+@media(max-width:1050px){:root{--page-gutter:28px;--card-inset:28px}}
+@media(max-width:600px){:root{--page-gutter:18px;--card-inset:24px}}

@@ -1,0 +1,24 @@
+---
+import 'leaflet/dist/leaflet.css';
+const headquarters='21943 Plummer St, Chatsworth, CA 91311';
+---
+<div class="interactive-map office-map" data-no-reveal>
+ <div class="service-map-canvas" role="region" aria-label="Interactive map of the Tech Judge office in Chatsworth"></div>
+ <p class="map-help"><strong>Tech Judge Inc.</strong><br/>{headquarters}</p>
+ <a class="map-open" href={'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(headquarters)} target="_blank" rel="noopener noreferrer">Open map and directions</a>
+ <noscript><p class="map-help">Use the directions link to open the map.</p></noscript>
+</div>
+<script>
+ import L from 'leaflet';
+ document.querySelectorAll<HTMLElement>('.office-map').forEach(wrapper=>{
+  const canvas=wrapper.querySelector<HTMLElement>('.service-map-canvas')!;
+  // Coordinates verified against the office map linked on techjudge.com/contact-us.
+  const office:L.LatLngTuple=[34.2430774,-118.6056309];
+  const map=L.map(canvas,{scrollWheelZoom:false}).setView(office,15);
+  const tiles=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'});
+  L.marker(office,{icon:L.divIcon({className:'area-pin',html:'<span></span>',iconSize:[22,22],iconAnchor:[11,11]}),title:'Tech Judge Inc. office',keyboard:true}).addTo(map).bindPopup('<strong>Tech Judge Inc.</strong><br>21943 Plummer St<br>Chatsworth, CA 91311');
+  const observe=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){tiles.addTo(map);map.invalidateSize();observe.disconnect();}},{rootMargin:'100px'});
+  observe.observe(canvas);
+  new ResizeObserver(()=>map.invalidateSize({pan:false})).observe(canvas);
+ });
+</script>

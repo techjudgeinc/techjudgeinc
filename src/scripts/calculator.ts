@@ -14,7 +14,7 @@ let shown=[0,0],target=[0,0],animation=0,announcement:ReturnType<typeof setTimeo
 function render(values:number[]){lower.textContent=formatMoney(Math.round(values[0]));upper.textContent=formatMoney(Math.round(values[1]));}
 function animate(low:number,high:number,initial:boolean){
  cancelAnimationFrame(animation);target=[low,high];
- if(initial||reduced.matches||document.documentElement.classList.contains('motion-paused')){shown=target;render(shown);return;}
+ if(initial||reduced.matches||document.documentElement.dataset.motion==='paused'){shown=target;render(shown);return;}
  const from=[...shown],started=performance.now();
  const tick=(now:number)=>{const progress=Math.min(1,(now-started)/480),ease=1-Math.pow(1-progress,3);shown=target.map((v,i)=>from[i]+(v-from[i])*ease);render(shown);if(progress<1)animation=requestAnimationFrame(tick);};
  animation=requestAnimationFrame(tick);
@@ -46,9 +46,9 @@ form.querySelectorAll<HTMLButtonElement>('[data-step]').forEach(button=>button.a
 }));
 form.querySelectorAll<HTMLButtonElement>('[data-headcount]').forEach(button=>button.addEventListener('click',()=>{users.value=button.dataset.headcount!;update();}));
 form.addEventListener('reset',()=>requestAnimationFrame(()=>{update();status.textContent='Choices reset to the starting configuration.';}));
-const finishAnimation=()=>{if(reduced.matches||document.documentElement.classList.contains('motion-paused')){cancelAnimationFrame(animation);shown=target;if(!summary.hidden)render(shown);}};
+const finishAnimation=()=>{if(reduced.matches||document.documentElement.dataset.motion==='paused'){cancelAnimationFrame(animation);shown=target;if(!summary.hidden)render(shown);}};
 reduced.addEventListener('change',finishAnimation);
-new MutationObserver(finishAnimation).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+new MutationObserver(finishAnimation).observe(document.documentElement,{attributes:true,attributeFilter:['data-motion']});
 const mobileBar=document.querySelector<HTMLElement>('.mobile-estimate')!;
 let formVisible=false,quoteVisible=false;
 new IntersectionObserver(entries=>{for(const entry of entries){if(entry.target===form)formVisible=entry.isIntersecting;else quoteVisible=entry.isIntersecting;}mobileBar.classList.toggle('is-active',formVisible&&!quoteVisible);},{threshold:0}).observe(form);

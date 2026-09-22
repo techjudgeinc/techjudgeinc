@@ -1,14 +1,14 @@
 import {readFileSync,existsSync,readdirSync} from 'node:fs';
 import {join} from 'node:path';
 import assert from 'node:assert/strict';
-const files=readdirSync('dist').filter(f=>f.endsWith('.html'));
+const files=readdirSync('dist',{recursive:true}).filter(f=>f.endsWith('.html')).map(f=>f.replaceAll('\\','/'));
 let links=0;
 for(const file of files){
  const html=readFileSync(join('dist',file),'utf8');
  assert.equal((html.match(/<h1(?:\s|>)/g)||[]).length,1,`${file}: one h1`);
  assert.match(html,/<meta name="robots" content="noindex, nofollow"/,`${file}: staging robots`);
  assert.match(html,/<title>[^<]+<\/title>/,`${file}: title`);
- if(!['404.html','thank-you.html'].includes(file)){
+ if(!['404.html','thank-you.html','brand.html'].includes(file)){
   const path=file==='index.html'?'/':'/'+file.replace('.html','');
   assert.ok(html.includes(`href="https://www.techjudge.com${path}"`),`${file}: canonical`);
  }

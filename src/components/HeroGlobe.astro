@@ -1,0 +1,10 @@
+<div class="hero-globe" aria-hidden="true" data-no-reveal><canvas data-gold-globe></canvas></div>
+<style>
+.hero-globe{position:absolute;top:-65px;right:-12vw;width:65vw;aspect-ratio:1;pointer-events:none;z-index:-1;opacity:.75;mask-image:linear-gradient(90deg,transparent,#000 22%)}
+canvas{position:absolute;inset:0;display:block;width:100%;height:100%}
+:global([data-theme=light]) .hero-globe{opacity:.48}
+@media(max-width:850px){.hero-globe{width:78vw;right:-25vw;top:0;opacity:.45}}
+@media(max-width:600px){.hero-globe{width:105vw;right:-42vw;top:10px;opacity:.3}}
+@media print,(forced-colors:active){.hero-globe{display:none}}
+</style>
+<script>import '../scripts/gold-globe';</script>

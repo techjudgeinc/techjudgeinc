@@ -1,0 +1,10 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import ContactBand from '../components/ContactBand.astro';
+---
+<SiteLayout path="/service-areas" title="Our Service Areas | Los Angeles & Southern California | Tech Judge" description="Based in Chatsworth, Tech Judge serves the San Fernando Valley, Thousand Oaks, Santa Clarita and greater Los Angeles. Discuss your location and project.">
+ <PageHeader eyebrow="Where we work" title="Local to the Valley." accent="Ready for the drive." intro="We’re based in Chatsworth, with much of our work in the San Fernando Valley, Thousand Oaks, Santa Clarita and greater Los Angeles."/>
+ <section class="section light"><div class="wrap split"><div><h2>Let’s start with<br/>your address.</h2><p class="lead">Our projects have taken us from San Diego to Bakersfield, with occasional work outside California. Availability depends on the location, scope and timeline. Tell us where you are and we’ll talk it through.</p><a class="button spaced" href="/contact-us?visit=site-walk">Ask about a site walk</a></div><div class="care-list">{[['San Fernando Valley','Our local base for onsite IT support, networks, cameras and home technology.'],['Thousand Oaks & surrounding areas','Business infrastructure, managed IT and residential technology projects.'],['Santa Clarita & greater Los Angeles','Office buildouts, property systems and support for the people who use them.']].map(([title,text])=><div><h3>{title}</h3><p>{text}</p></div>)}</div></div></section>
+ <ContactBand heading="Tell us where the work is."/>
+</SiteLayout>

@@ -1,69 +1,99 @@
 ---
 import '@fontsource-variable/inter';
-import '../styles/global.css';
-import BackgroundMotion from '../components/BackgroundMotion.astro';
-import ScrollExperience from '../components/ScrollExperience.astro';
-import '../styles/prototype-direction.css';
-import { logo, logoMark } from '../lib/assets';
-const { title, description, path = '/', utility = false } = Astro.props;
-const staging = import.meta.env.PUBLIC_SITE_ENV !== 'production';
-const canonical = new URL(path, 'https://www.techjudge.com').href;
-const services = [['Managed IT & Cybersecurity','/it-and-cyber-security'],['Infrastructure & Security','/infrastructure-and-security'],['Luxury Smart Homes','/luxury-smart-home']];
-const industries = [['Small & Medium Businesses','/small-medium-businesses'],['Property Management','/property-management'],['General Contractors','/general-contractors'],['Architects & Designers','/architects-designers'],['Luxury Home Builders','/luxury-home-builders']];
-const company = [['About Tech Judge','/about-us'],['Technology Partners','/partners'],['Careers','/careers'],['What is an MSP?','/what-is-an-msp']];
-const groups = [['Services','/services',services],['Industries','/industries',industries],['Company','/about-us',company]];
-const organization = { '@context':'https://schema.org', '@type':'Organization', '@id':'https://www.techjudge.com/#organization', name:'Tech Judge Inc.', url:'https://www.techjudge.com/', logo:'https://www.techjudge.com'+logo, telephone:'+18182132050',email:'info@techjudge.com',address:{'@type':'PostalAddress',streetAddress:'21943 Plummer St.',addressLocality:'Chatsworth',addressRegion:'CA',postalCode:'91311',addressCountry:'US'}};
+import '../styles/experience.css';
+import DisplayControls from '../components/DisplayControls.astro';
+import PageLoader from '../components/PageLoader.astro';
+import '../styles/display-options.css';
+import '../styles/alignment.css';
+import {siteUrl,searchDescriptions,breadcrumbs} from '../lib/seo';
+import {logo,logoMark} from '../lib/assets';
+const {title,description,path='/',utility=false,standalone=false}=Astro.props;
+const metaDescription=searchDescriptions[path]||description;
+const staging=import.meta.env.PUBLIC_SITE_ENV!=='production';
+const canonical=new URL(path,'https://www.techjudge.com').href;
+const services=[['Managed IT & Cybersecurity','/it-and-cyber-security'],['Infrastructure & Security','/infrastructure-and-security'],['Luxury Smart Homes','/luxury-smart-home']];
+const links=[['Our work','/projects'],['Pricing','/plan-your-it'],['About us','/about-us']];
+const organization={'@context':'https://schema.org','@type':'LocalBusiness','@id':'https://www.techjudge.com/#organization',name:'Tech Judge Inc.',image:'https://www.techjudge.com'+logo,geo:{'@type':'GeoCoordinates',latitude:34.2430774,longitude:-118.6056309},areaServed:['Los Angeles','San Fernando Valley','Thousand Oaks','Santa Clarita'],url:'https://www.techjudge.com/',logo:'https://www.techjudge.com'+logo,telephone:'+18182132050',email:'info@techjudge.com',address:{'@type':'PostalAddress',streetAddress:'21943 Plummer St.',addressLocality:'Chatsworth',addressRegion:'CA',postalCode:'91311',addressCountry:'US'}};
+const breadcrumbSchema={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:breadcrumbs(path).map((item,index)=>({'@type':'ListItem',position:index+1,name:item.name,item:siteUrl+item.path}))};
+const website={'@context':'https://schema.org','@type':'WebSite','@id':siteUrl+'/#website',url:siteUrl+'/',name:'Tech Judge Inc.',inLanguage:'en-US',publisher:{'@id':siteUrl+'/#organization'}};
 ---
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    {(staging || utility) && <meta name="robots" content="noindex, nofollow" />}
-    {!utility && <link rel="canonical" href={canonical} />}
-    <meta name="theme-color" content="#111310" />
-    <link rel="icon" type="image/png" href={logoMark} />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Tech Judge Inc." />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={'https://www.techjudge.com'+logo} />
-    <meta property="og:image:alt" content="Tech Judge Inc. logo" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <script type="application/ld+json" set:html={JSON.stringify(organization)} />
-    <slot name="head" />
-  </head>
-  <body>
-    <a class="skip" href="#main">Skip to content</a>
-    <header class="site-header">
-      <div class="scroll-progress" aria-hidden="true"></div>
-      <div class="nav-shell wrap">
-        <a href="/" class="brand" aria-label="Tech Judge home"><img src={logo} width="934" height="152" alt="Tech Judge Inc." /></a>
-        <nav class="desktop-nav" aria-label="Main navigation">
-          {groups.map(([label,href,items]) => <details class="nav-group"><summary>{label}<span aria-hidden="true">⌄</span></summary><div class="nav-pop"><a class="nav-overview" href={href as string}>{label} overview <span aria-hidden="true">↗</span></a>{(items as string[][]).map(([name,link])=><a href={link} aria-current={path===link?'page':undefined}>{name}</a>)}</div></details>)}
-          <a class="pricing-nav" href="/plan-your-it" aria-current={path==='/plan-your-it'?'page':undefined}>Pricing</a>
-        </nav>
-        <a class="button button-small nav-cta" href="/contact-us">Let’s talk <span aria-hidden="true">↗</span></a>
-        <details class="mobile-nav"><summary aria-label="Open navigation"><span></span><span></span></summary><nav aria-label="Mobile navigation">{groups.map(([label,href,items])=><div><a href={href as string} class="mobile-label">{label}</a>{(items as string[][]).map(([name,link])=><a href={link}>{name}</a>)}</div>)}<a href="/plan-your-it" class="mobile-label">Pricing</a><a href="/contact-us" class="button">Book a consultation ↗</a></nav></details>
-      </div>
-    </header>
-    <main id="main"><slot /></main>
-    <footer class="site-footer">
-      <div class="wrap footer-top"><div><a href="/" class="brand" aria-label="Tech Judge home"><img src={logo} width="934" height="152" alt="Tech Judge Inc." loading="lazy" /></a><p>One team. Every connection.</p><a href="tel:+18182132050" class="footer-phone">(818) 213-2050</a><a href="mailto:info@techjudge.com">info@techjudge.com</a><p>21943 Plummer St.<br/>Chatsworth, CA 91311</p></div><div><h2>Expertise</h2>{services.map(([name,href])=><a href={href}>{name}</a>)}</div><div><h2>Company</h2>{company.slice(0,3).map(([name,href])=><a href={href}>{name}</a>)}<a href="/contact-us">Contact</a><a href="/contact-us#client-support">Existing client support</a></div><div><h2>Built on trust</h2><p>California C7<br/>License #1142144</p><a href="https://share.google/sPEeP7n79I2hqWTM3" target="_blank" rel="noopener noreferrer">Find us on Google <span aria-hidden="true">↗</span></a></div></div>
-      <div class="wrap footer-bottom"><span>© {new Date().getFullYear()} Tech Judge Inc.</span><div><a href="/privacy-policy">Privacy policy</a><a href="/terms-of-service">Terms of service</a></div>{staging && <span class="preview-label">Private review · Staging</span>}</div>
-    </footer>
-    <BackgroundMotion />
-    <ScrollExperience />
-    <style>.pricing-nav{font-size:.875rem;align-self:center;padding-block:20px}.pricing-nav:hover,.pricing-nav[aria-current=page]{color:var(--gold)}</style>
-    <script>
-      document.addEventListener('click', e => {
-        document.querySelectorAll<HTMLDetailsElement>('.nav-group[open],.mobile-nav[open]').forEach(el => { if (!el.contains(e.target as Node)) el.open=false; });
-      });
-      document.querySelectorAll<HTMLDetailsElement>('.nav-group').forEach(el=>el.addEventListener('toggle',()=>{if(el.open)document.querySelectorAll<HTMLDetailsElement>('.nav-group').forEach(other=>{if(other!==el)other.open=false;});}));
-      document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll<HTMLDetailsElement>('.nav-group[open],.mobile-nav[open]').forEach(el=>{el.open=false;el.querySelector('summary')?.focus();});}});
-    </script>
-  </body>
+<html lang="en" data-theme="dark">
+ <head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>{title}</title><meta name="description" content={metaDescription}/>
+  {(staging||utility)&&<meta name="robots" content="noindex, nofollow"/>}
+  {!utility&&<link rel="canonical" href={canonical}/>}
+  <meta name="theme-color" content="#0b0b0a"/><link rel="icon" type="image/png" href={logoMark}/>
+  <meta property="og:locale" content="en_US"/><meta property="og:image:alt" content="Tech Judge Inc."/><meta name="twitter:title" content={title}/><meta name="twitter:description" content={metaDescription}/><meta name="twitter:image" content={siteUrl+logo}/><meta name="twitter:image:alt" content="Tech Judge Inc."/>
+  <meta property="og:type" content="website"/><meta property="og:site_name" content="Tech Judge Inc."/>
+  <meta property="og:title" content={title}/><meta property="og:description" content={metaDescription}/><meta property="og:url" content={canonical}/>
+  <meta property="og:image" content={'https://www.techjudge.com'+logo}/><meta name="twitter:card" content="summary_large_image"/>
+  <script is:inline>try{const root=document.documentElement;root.dataset.theme=localStorage.getItem('tj-theme')==='light'?'light':'dark';root.dataset.palette='original';root.dataset.motion=localStorage.getItem('tj-motion')==='paused'?'paused':'playing'}catch{}</script>
+  <script is:inline>
+   (() => {
+    const root=document.documentElement;
+    const home=location.pathname==='/' || location.pathname==='/index.html';
+    if(home)root.dataset.loading='true';
+    const slowTimer=home?null:setTimeout(()=>{if(document.readyState!=='complete')root.dataset.loading='true';},450);
+    const started=performance.now();
+    let closing=false;
+    const finish=()=>{
+     if(closing)return;
+     if(slowTimer)clearTimeout(slowTimer);
+     closing=true;
+     setTimeout(()=>{
+      root.dataset.loaderClosing='true';
+      setTimeout(()=>{
+       delete root.dataset.loading;
+       delete root.dataset.loaderClosing;
+       document.querySelector('.page-loader')?.remove();
+       document.querySelectorAll('[data-loader-inert]').forEach(el=>{el.inert=false;el.removeAttribute('data-loader-inert');});
+       document.dispatchEvent(new Event('tj:page-ready'));
+      },matchMedia('(prefers-reduced-motion: reduce)').matches?0:300);
+     },Math.max(0,(matchMedia('(prefers-reduced-motion: reduce)').matches||!home?0:700)-(performance.now()-started)));
+    };
+    document.addEventListener('DOMContentLoaded',()=>{
+     if(!root.dataset.loading){if(document.readyState==='complete')finish();return;}
+     document.querySelectorAll('body > header,body > main,body > footer,.display-controls').forEach(el=>{if(!el.inert){el.inert=true;el.setAttribute('data-loader-inert','');}});
+     if(home)finish();
+    },{once:true});
+    window.addEventListener('load',finish,{once:true});
+    setTimeout(finish,2500);
+    window.addEventListener('pageshow',event=>{if(event.persisted)finish();});
+   })();
+   if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+    document.documentElement.dataset.entranceReady='true';
+    setTimeout(()=>delete document.documentElement.dataset.entranceReady,5000);
+   }
+  </script>
+  <style is:inline>
+   html[data-entrance-ready] :is(.showcase-shell,.hub-row):not(.is-visible){opacity:0}
+   @media(prefers-reduced-motion:reduce){html[data-entrance-ready] :is(.showcase-shell,.hub-row):not(.is-visible){opacity:1}}
+  </style>
+  <script type="application/ld+json" set:html={JSON.stringify(organization)}/><script type="application/ld+json" set:html={JSON.stringify(website)}/>{!utility&&path!=='/'&&<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)}/>}<slot name="head"/>
+ </head>
+ <body>
+  <PageLoader/>
+  <div class="site-atmosphere" aria-hidden="true"><span class="ambient-light ambient-one"></span><span class="ambient-light ambient-two"></span><span class="ambient-light ambient-three"></span></div>
+  <a class="skip" href="#main">Skip to content</a>
+  {!standalone&&<header class="masthead"><div class="wrap masthead-inner">
+   <a href="/" class="brand" aria-label="Tech Judge home"><img src={logo} width="934" height="152" alt="Tech Judge Inc."/></a>
+   <nav class="main-nav" aria-label="Main navigation"><a href="/" aria-current={path==='/'?'page':undefined}>Home</a><details class="nav-group"><summary>What we do <span aria-hidden="true">+</span></summary><div class="nav-pop"><a href="/services">All services</a>{services.map(([label,href])=><a href={href} aria-current={path===href?'page':undefined}>{label}</a>)}<a href="/industries">Who we work with</a></div></details>{links.map(([label,href])=><a href={href} aria-current={path===href?'page':undefined}>{label}</a>)}</nav>
+   <div class="nav-tools"><a class="button button-small nav-contact" href="/contact-us">Let’s talk</a><details class="mobile-menu"><summary>Menu</summary><nav aria-label="Mobile navigation"><a href="/" aria-current={path==='/'?'page':undefined}>Home</a>{services.map(([label,href])=><a href={href}>{label}</a>)}{links.map(([label,href])=><a href={href}>{label}</a>)}<a href="/industries">Who we work with</a><a href="/contact-us">Contact us</a><a href="/support">Client support</a><a href="tel:+18182132050">(818) 213-2050</a></nav></details></div>
+  </div></header>}
+  <DisplayControls/>
+  <main id="main" tabindex="-1"><slot/></main>
+  {!standalone&&<footer class="site-footer"><div class="wrap footer-top"><div><a href="/" class="brand" aria-label="Tech Judge home"><img src={logo} width="934" height="152" alt="Tech Judge Inc." loading="lazy"/></a><p>Good technology.<br/>People who take care of it.</p><a href="tel:+18182132050" class="footer-phone">(818) 213-2050</a><a href="mailto:info@techjudge.com">info@techjudge.com</a><p>21943 Plummer St.<br/>Chatsworth, CA 91311</p></div><div><h2>What we do</h2>{services.map(([label,href])=><a href={href}>{label}</a>)}<a href="/plan-your-it">Managed IT pricing</a></div><div><h2>Get to know us</h2><a href="/about-us">Our team</a><a href="/projects">Our work</a><a href="/industries">Who we work with</a><a href="/partners">Technology partners</a><a href="/service-areas">Where we work</a><a href="/careers">Careers</a></div><div><h2>Talk to a person</h2><a href="/contact-us">Start a conversation</a><a href="/contact-us?visit=site-walk">Request a site walk</a><a href="/support">Existing client support</a><p>California C7<br/>License #1142144</p></div></div><div class="wrap footer-bottom"><span>© {new Date().getFullYear()} Tech Judge Inc.</span><div><a href="/privacy-policy">Privacy policy</a><a href="/terms-of-service">Terms of service</a></div>{staging&&<span class="preview-label">Private preview · Not for publication</span>}</div></footer>}
+  <script>
+   const toggle=document.querySelector<HTMLButtonElement>('.theme-toggle')!;
+   const syncTheme=()=>{const light=document.documentElement.dataset.theme==='light';toggle.setAttribute('aria-pressed',String(light));toggle.setAttribute('aria-label',`Switch to ${light?'dark':'light'} mode`);document.querySelector('meta[name="theme-color"]')?.setAttribute('content',getComputedStyle(document.documentElement).getPropertyValue('--ink').trim());};
+   syncTheme();toggle.addEventListener('click',()=>{const theme=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=theme;try{localStorage.setItem('tj-theme',theme)}catch{}syncTheme();});
+   document.addEventListener('click',e=>document.querySelectorAll<HTMLDetailsElement>('.nav-group[open],.mobile-menu[open]').forEach(el=>{if(!el.contains(e.target as Node))el.open=false;}));
+   document.querySelectorAll<HTMLDetailsElement>('.nav-group,.mobile-menu').forEach(menu=>menu.addEventListener('focusout',event=>{if(!menu.contains(event.relatedTarget as Node))menu.open=false;}));
+   document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll<HTMLDetailsElement>('.nav-group[open],.mobile-menu[open]').forEach(el=>{el.open=false;el.querySelector('summary')?.focus();});});
+   import '../scripts/scroll-reveal';
+   if(import.meta.env.DEV)import('../scripts/dev-a11y-audit');
+  </script>
+ </body>
 </html>

@@ -1,11 +1,48 @@
 ---
-import {reviews,googleRating,googleReviewsUrl} from '../data/reviews';
-import '../styles/reviews.css';
+import {reviews,googleReviewsUrl} from '../data/reviews';
 const {service}=Astro.props;
 const selected=service?reviews.filter(r=>r.slug===service):reviews;
 ---
-{selected.length>0 && <section class="section google-reviews" aria-labelledby="reviews-heading"><div class="wrap">
- <div class="section-heading"><div><p class="eyebrow">In our clients’ words</p><h2 id="reviews-heading">Trust earned.<br/><em>One project at a time.</em></h2></div><div class="review-summary"><p><span class="review-stars" aria-hidden="true">★★★★★</span> <strong>{googleRating.score} / 5</strong></p><a href={googleReviewsUrl} target="_blank" rel="noopener noreferrer">{googleRating.count} Google reviews ↗</a><small>Rating checked <time datetime={googleRating.date}>{googleRating.checked}</time></small></div></div>
- <div class:list={['review-grid',{'review-grid-single':!!service}]}>{selected.map(r=><figure class="review-card"><p class="eyebrow">{r.topic}</p><blockquote>“{r.quote}”</blockquote><figcaption><strong>{r.name}</strong><span>Google review · Excerpt</span></figcaption></figure>)}</div>
- <a class="text-link review-all" href={googleReviewsUrl} target="_blank" rel="noopener noreferrer">Read all reviews on Google <span aria-hidden="true">↗</span></a>
- </div></section>}
+<section class="section client-words"><div class="wrap">
+ <div class="review-intro"><h2>Care people notice.</h2><a class="text-link" href={googleReviewsUrl} target="_blank" rel="noopener noreferrer">Read all reviews on Google</a></div>
+ <div class="review-stage" role="region" aria-roledescription="carousel" aria-label="Client reviews">{selected.map((review,i)=><figure data-review={i}><div class="review-stars" role="img" aria-label="5 stars">★★★★★</div><blockquote>“{review.quote}”</blockquote><figcaption><strong>{review.name}</strong><span>{review.topic} · Google review</span></figcaption></figure>)}</div>
+ {selected.length>1&&<div class="review-controls" hidden data-no-reveal>
+ <button type="button" data-review-prev aria-label="Previous review"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
+ <div class="review-dots" role="group" aria-label="Choose a review">{selected.map((_,i)=><button type="button" data-review-dot={i} aria-label={'Show review '+(i+1)} aria-pressed={i===0?'true':'false'}><span/></button>)}</div>
+ <button type="button" data-review-next aria-label="Next review"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button>
+ <button type="button" class="review-autoplay" data-review-pause aria-label="Pause automatic reviews" aria-pressed="false"><svg class="review-pause-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg><svg class="review-play-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m8 5 11 7-11 7Z"/></svg></button>
+ </div>}
+
+</div></section>
+<script>
+ document.querySelectorAll<HTMLElement>('.client-words').forEach(section=>{
+  const slides=[...section.querySelectorAll<HTMLElement>('[data-review]')];
+  if(slides.length<2)return;
+  const controls=section.querySelector<HTMLElement>('.review-controls')!;
+  const dots=[...section.querySelectorAll<HTMLButtonElement>('[data-review-dot]')];
+  const pause=section.querySelector<HTMLButtonElement>('[data-review-pause]')!;
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  let current=0, stopped=false, hovered=false, focused=false, visible=false;
+  const render=()=>{
+   slides.forEach((slide,i)=>{slide.hidden=i!==current;slide.inert=i!==current;slide.setAttribute('aria-hidden',String(i!==current));});
+   dots.forEach((dot,i)=>dot.setAttribute('aria-pressed',String(i===current)));
+   if(!reduced.matches)slides[current].animate([{opacity:0,translate:'0 10px'},{opacity:1,translate:'none'}],{duration:600,easing:'ease-out'});
+  };
+  const sync=()=>{const off=stopped||reduced.matches;pause.setAttribute('aria-label',off?'Play automatic reviews':'Pause automatic reviews');pause.setAttribute('aria-pressed',String(off));pause.disabled=reduced.matches;};
+  const step=(delta:number)=>{current=(current+delta+slides.length)%slides.length;render();};
+  section.querySelector('.review-stage')?.classList.add('has-review-slider');
+  controls.hidden=false;render();sync();
+  section.querySelector('[data-review-prev]')?.addEventListener('click',()=>step(-1));
+  section.querySelector('[data-review-next]')?.addEventListener('click',()=>step(1));
+  dots.forEach((dot,i)=>dot.addEventListener('click',()=>{current=i;render();}));
+  pause.addEventListener('click',()=>{stopped=!stopped;sync();});
+  section.addEventListener('mouseenter',()=>hovered=true);
+  section.addEventListener('mouseleave',()=>hovered=false);
+  section.addEventListener('focusin',()=>focused=true);
+  section.addEventListener('focusout',event=>focused=section.contains(event.relatedTarget as Node));
+  reduced.addEventListener('change',sync);
+  new IntersectionObserver(entries=>visible=entries[0].isIntersecting,{threshold:.25}).observe(section);
+  const timer=window.setInterval(()=>{if(visible&&!hovered&&!focused&&!stopped&&!reduced.matches&&!document.hidden&&document.documentElement.dataset.motion!=='paused')step(1);},7000);
+  window.addEventListener('pagehide',()=>clearInterval(timer),{once:true});
+ });
+</script>

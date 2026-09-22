@@ -7,10 +7,15 @@
     "dev": "astro dev --host 127.0.0.1 --port 4321",
     "build": "node scripts/build.mjs",
     "preview": "node scripts/serve.mjs",
-    "verify": "node scripts/verify.mjs"
+    "verify": "node scripts/verify.mjs && node scripts/verify-pricing.mjs && node scripts/verify-seo-a11y.mjs && node scripts/verify-brand.mjs"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.0",
-    "astro": "^7.3.2"
+    "astro": "^7.3.2",
+    "leaflet": "^1.9.4"
+  },
+  "devDependencies": {
+    "axe-core": "^4.13.0"
   }
 }
+

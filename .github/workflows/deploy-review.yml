@@ -19,7 +19,11 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+        env:
+          PUBLIC_CONTACT_ENABLED: ${{ vars.PUBLIC_CONTACT_ENABLED }}
+          PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.PUBLIC_TURNSTILE_SITE_KEY }}
       - run: npm run verify
+      - run: node scripts/verify-contact.mjs
       - name: Check deployment credential
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

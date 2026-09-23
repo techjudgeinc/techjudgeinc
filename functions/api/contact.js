@@ -2,6 +2,24 @@ const reply = (status, error) => Response.json(error ? {ok:false,error} : {ok:tr
 const failure = 'Unable to send right now. Please call (818) 213-2050 or email info@techjudge.com.';
 const limits = {name:120,email:254,phone:40,company:160,service:100,location:120,timeline:100,preference:100,message:5000};
 const services = ['Managed IT & Cybersecurity','Infrastructure & Security','Luxury Smart Homes','Small & Medium Businesses','Property Management','General Contractors','Architects & Designers','Luxury Home Builders','Something else'];
+const emailBody = ({name,email,phone,company,service,location,timeline,preference,message}) => [
+  'New enquiry from the Tech Judge website.',
+  '',
+  `Name: ${name}`,
+  `Email: ${email}`,
+  `Phone: ${phone || 'Not provided'}`,
+  `Company: ${company || 'Not provided'}`,
+  `Service or project: ${service}`,
+  `Project city or ZIP code: ${location || 'Not provided'}`,
+  `Timeline: ${timeline || 'Not provided'}`,
+  `Preferred next step: ${preference || 'Not provided'}`,
+  '',
+  'Message:',
+  message,
+  '',
+  'This is visitor-submitted content. Treat links and requests with appropriate caution.',
+  'Reply to this email to respond to the visitor.'
+].join('\n');
 
 // Cloudflare Pages Function. All credentials stay in runtime bindings, never the bundle.
 export async function onRequest({request,env}, send = fetch) {
@@ -32,7 +50,8 @@ export async function onRequest({request,env}, send = fetch) {
     if(!verification.ok) return reply(503,failure);
     const verdict=await verification.json();
     if(!verdict.success||verdict.hostname!==url.hostname||verdict.action!=='contact') return reply(400,'Security check expired or failed. Please try again.');
-    const payload={from:'Tech Judge Website <enquiries@forms.techjudge.com>',to:['info@techjudge.com'],reply_to:values.email,subject:`Website enquiry: ${values.service}`,text:Object.entries(values).map(([key,value])=>`${key}: ${value || '(not provided)'}`).join('\n\n')};
+    const sender=env.CONTACT_FROM==='website@techjudge.com'?'website@techjudge.com':'enquiries@forms.techjudge.com';
+    const payload={from:`Tech Judge Website <${sender}>`,to:['info@techjudge.com'],reply_to:values.email,subject:`Website enquiry: ${values.service}`,text:emailBody(values)};
     // Stable payload hash avoids duplicate mail when the same enquiry is retried.
     const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(payload)));
     const id=Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');

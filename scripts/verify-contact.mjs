@@ -18,8 +18,11 @@ assert.equal((await run(request())).status,200);
 const mail=JSON.parse(calls[1].options.body);
 assert.deepEqual(mail.to,['info@techjudge.com']);assert.equal(mail.reply_to,'visitor@example.com');
 assert.equal(mail.from,'Tech Judge Website <enquiries@forms.techjudge.com>');
+assert.equal(mail.text,`New enquiry from the Tech Judge website.\n\nName: Test Visitor\nEmail: visitor@example.com\nPhone: Not provided\nCompany: Not provided\nService or project: Managed IT & Cybersecurity\nProject city or ZIP code: Not provided\nTimeline: Not provided\nPreferred next step: Not provided\n\nMessage:\nSynthetic test enquiry only.\n\nThis is visitor-submitted content. Treat links and requests with appropriate caution.\nReply to this email to respond to the visitor.`);
+calls=[];assert.equal((await run(request(),{...env,CONTACT_FROM:'website@techjudge.com'})).status,200);
+assert.equal(JSON.parse(calls[1].options.body).from,'Tech Judge Website <website@techjudge.com>');
 const firstKey=calls[1].options.headers['Idempotency-Key'];calls=[];
-await run(request());assert.equal(calls[1].options.headers['Idempotency-Key'],firstKey);
+await run(request(),{...env,CONTACT_FROM:'website@techjudge.com'});assert.equal(calls[1].options.headers['Idempotency-Key'],firstKey);
 for(const verdict of [{success:false},{success:true,hostname:'evil.example',action:'contact'},{success:true,hostname:'review.techjudge-review.pages.dev',action:'other'}]){
  let count=0;assert.equal((await run(request(),env,async()=>{count++;return Response.json(verdict);})).status,400);assert.equal(count,1);
 }

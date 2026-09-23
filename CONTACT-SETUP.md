@@ -1,17 +1,12 @@
 # Contact delivery setup
 
-Current Resend sender: enquiries@forms.techjudge.com. Target sender:
-website@techjudge.com. Fixed recipient: info@techjudge.com.
-The function uses the current sender until CONTACT_FROM is set to
-website@techjudge.com. Before setting it, verify techjudge.com in Resend and
-permit that domain on the existing website sending key. Keep forms.techjudge.com
-intact until the switch has been verified.
+Resend sender: website@techjudge.com. Fixed recipient: info@techjudge.com.
+The techjudge.com domain is verified for sending in Resend. The existing
+Tech Judge website sending key is restricted to techjudge.com.
 Reply-To is the validated visitor address. No automatic visitor emails are sent.
 
 Cloudflare Pages Preview runtime settings:
-- RESEND_API_KEY (Secret): sending-only key restricted to forms.techjudge.com
-  until techjudge.com is verified and its key scope is changed.
-- CONTACT_FROM (Text, optional): website@techjudge.com after sender verification.
+- RESEND_API_KEY (Secret): sending-only key restricted to techjudge.com.
 - TURNSTILE_SECRET_KEY (Secret): widget validation secret.
 - CONTACT_ENABLED (Text): true only when ready for real enquiries.
 - CONTACT_ALLOWED_HOSTS (Text): review.techjudge-review.pages.dev

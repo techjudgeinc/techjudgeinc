@@ -50,8 +50,7 @@ export async function onRequest({request,env}, send = fetch) {
     if(!verification.ok) return reply(503,failure);
     const verdict=await verification.json();
     if(!verdict.success||verdict.hostname!==url.hostname||verdict.action!=='contact') return reply(400,'Security check expired or failed. Please try again.');
-    const sender=env.CONTACT_FROM==='website@techjudge.com'?'website@techjudge.com':'enquiries@forms.techjudge.com';
-    const payload={from:`Tech Judge Website <${sender}>`,to:['info@techjudge.com'],reply_to:values.email,subject:`Website enquiry: ${values.service}`,text:emailBody(values)};
+    const payload={from:'Tech Judge Website <website@techjudge.com>',to:['info@techjudge.com'],reply_to:values.email,subject:`Website enquiry: ${values.service}`,text:emailBody(values)};
     // Stable payload hash avoids duplicate mail when the same enquiry is retried.
     const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(payload)));
     const id=Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');

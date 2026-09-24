@@ -73,7 +73,7 @@ html[data-loader-closing] .page-loader{opacity:0}
 @keyframes loader-sweep{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 html[data-loading][data-theme=light] .page-loader{background:#f6f3ec}
 [data-theme=light] .loader-content>img{filter:brightness(0)}
-html[data-loading] :is(.launch-copy,.page-header,.detail-opening,.estimate-header){animation-play-state:paused}
+html[data-loading] :is(.page-header,.detail-opening,.estimate-header){animation-play-state:paused}
 @media(prefers-reduced-motion:reduce){.loader-line>span{animation:none}.page-loader{transition:none!important}}
 @media print{.page-loader{display:none!important}}
 body{position:relative;isolation:isolate}
@@ -120,6 +120,7 @@ main{isolation:isolate}.page-lights{position:absolute;inset:0;z-index:-1;overflo
 @media print{.section-lights{display:none}}
 /* One entrance per introduction: all text and CTAs start and finish together. */
 :is(.launch-copy,.page-header,.detail-opening,.estimate-header){animation:first-entrance 1.5s cubic-bezier(.22,.61,.36,1) .15s both}
+.launch-copy{animation-duration:1s;animation-delay:0s}
 :is(.launch-copy,.page-header,.detail-opening,.estimate-header) :is(h1,h2,p,.breadcrumbs,.launch-actions,.inline-actions,.button){animation:none!important}
 @media(prefers-reduced-motion:reduce){:is(.launch-copy,.page-header,.detail-opening,.estimate-header){animation:none!important}}
 /* Entrances start with CSS on the first paint, not after the observer script loads. */

@@ -1,5 +1,6 @@
 ---
 import {pageNames} from '../lib/seo';
 const {eyebrow,title,accent='',intro=''}=Astro.props;
+const pagePath=Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '')||'/';
 ---
-<section class="page-header wrap"><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">{pageNames[Astro.url.pathname.replace(/\/$/, '')]||eyebrow}</span></nav><h1>{title}{accent && <><br/><em>{accent}</em></>}</h1>{intro && <p class="lead">{intro}</p>}</section>
+<section class="page-header wrap"><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">{pageNames[pagePath]||eyebrow}</span></nav><h1>{title}{accent && <><br/><em>{accent}</em></>}</h1>{intro && <p class="lead">{intro}</p>}</section>

@@ -124,11 +124,6 @@ main{isolation:isolate}.page-lights{position:absolute;inset:0;z-index:-1;overflo
 @media(prefers-reduced-motion:reduce){:is(.launch-copy,.page-header,.detail-opening,.estimate-header){animation:none!important}}
 /* Entrances start with CSS on the first paint, not after the observer script loads. */
 @keyframes first-entrance{from{opacity:0;translate:0 36px}to{opacity:1;translate:0 0}}
-:is(.launch-copy,.page-header,.detail-opening,.estimate-header) :is(h1,h2,p,.breadcrumbs,.launch-actions,.inline-actions){animation:first-entrance 1.8s cubic-bezier(.22,.61,.36,1) both;animation-delay:.2s}
-:is(.launch-copy,.page-header,.detail-opening,.estimate-header) p{animation-delay:.5s}
-:is(.launch-copy,.detail-opening) :is(.launch-actions,.inline-actions){animation-delay:.8s}
-.launch-copy .hero-local{animation-delay:1s}
-@media(prefers-reduced-motion:reduce){:is(.launch-copy,.page-header,.detail-opening,.estimate-header) :is(h1,h2,p,.breadcrumbs,.launch-actions,.inline-actions){animation:none!important}}
 @media print{:is(.launch-copy,.page-header,.detail-opening,.estimate-header) *{animation:none!important;opacity:1!important}}
 .brand-scroll{padding:45px 0 35px;overflow:hidden}
 .brand-scroll>.wrap{display:flex;align-items:center;justify-content:space-between;gap:25px;margin-bottom:30px}

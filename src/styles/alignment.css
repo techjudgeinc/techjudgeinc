@@ -4,6 +4,7 @@
 .launch-hero .showcase-shell{max-width:var(--max);width:min(var(--max),calc(100% - var(--page-gutter)*2))}
 .launch-hero>.proof-ribbon{padding-inline:0}
 .contact-band{padding-inline:var(--card-inset)}
+.contact-band:last-child{margin-bottom:clamp(64px,7vw,104px)}
 .contact-band .contact-band-inner{width:100%;max-width:none}
 .ownership-grid>.connection-card.ownership-editorial,.ownership-grid>.care-card,.ownership-grid>.scope-card,
 .client-stack>.client-panel,.client-words>.wrap{padding-inline:var(--card-inset)}

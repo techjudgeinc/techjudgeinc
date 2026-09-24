@@ -35,6 +35,7 @@ for(const file of files){
   const crumb=schemas.find(s=>s['@type']==='BreadcrumbList');
   assert.ok(crumb?.itemListElement.length>=2,file+': breadcrumbs');
   crumb.itemListElement.forEach((item,i)=>assert.equal(item.position,i+1));
+  if(file==='services.html')assert.match(html,/<nav class="breadcrumbs" aria-label="Breadcrumb">[\s\S]*?<span aria-current="page">All services<\/span>/,file+': visible breadcrumb must match navigation');
  }
 }
 console.log('SEO/accessibility markup checks passed for '+files.length+' pages: unique metadata, image alternatives, labels, IDs, ARIA references, skip destinations and structured data.');

@@ -78,8 +78,9 @@ const setup = () => {
     else observer!.observe(el);
   });
 };
-if(document.documentElement.dataset.loading)document.addEventListener('tj:page-ready',setup,{once:true});
-else setup();
+// Register hidden/reveal states while the loader still covers the page.
+// Waiting until it closes makes visible content vanish and animate a second time.
+setup();
 reducedMotion.addEventListener('change', setup);
 // Keyboard navigation must never land on an invisible control.
 document.addEventListener('focusin', event => {

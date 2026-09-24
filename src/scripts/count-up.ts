@@ -18,7 +18,10 @@ document.querySelectorAll<HTMLElement>('[data-count-to]').forEach(element => {
     };
     frame = requestAnimationFrame(tick);
   }, { threshold: .65 });
-  observer.observe(element);
+  // Keep the confirmed values intact under the loader; count only once it closes.
+  if (document.documentElement.hasAttribute('data-loading')) {
+    document.addEventListener('tj:page-ready', () => observer.observe(element), { once: true });
+  } else observer.observe(element);
   preference.addEventListener('change', () => { if (preference.matches) settle(); });
   window.addEventListener('pagehide', () => { settle(); observer.disconnect(); }, { once: true });
 });

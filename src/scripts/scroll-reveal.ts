@@ -45,9 +45,10 @@ const show = (el: HTMLElement) => {
   el.classList.add('is-visible');
   if (!reducedMotion.matches) {
     const stationary = el.classList.contains('reveal-stationary');
+    const opening = !!el.closest('.launch-hero');
     el.animate(
       [{opacity:0,translate:stationary?'none':'0 28px'}, {opacity:1,translate:'none'}],
-      {duration:1500,delay:Number.parseFloat(el.style.getPropertyValue('--reveal-delay'))||0,easing:'cubic-bezier(.22,.61,.36,1)',fill:'backwards'}
+      {duration:opening?1000:1500,delay:opening?0:Number.parseFloat(el.style.getPropertyValue('--reveal-delay'))||0,easing:'cubic-bezier(.22,.61,.36,1)',fill:'backwards'}
     );
   }
   observer?.unobserve(el);
@@ -60,6 +61,7 @@ const setup = () => {
     return;
   }
   observer = new IntersectionObserver(entries => {
+    if (document.documentElement.hasAttribute('data-loading')) return;
     entries.forEach(entry => {
       if (entry.isIntersecting) show(entry.target as HTMLElement);
     });
@@ -78,9 +80,10 @@ const setup = () => {
     else observer!.observe(el);
   });
 };
-// Register hidden/reveal states while the loader still covers the page.
-// Waiting until it closes makes visible content vanish and animate a second time.
+// Register hidden states under the loader, then recheck the viewport when it closes.
+// Observers can fire behind the loader, so those entries must not start animations.
 setup();
+document.addEventListener('tj:page-ready', setup, {once:true});
 reducedMotion.addEventListener('change', setup);
 // Keyboard navigation must never land on an invisible control.
 document.addEventListener('focusin', event => {

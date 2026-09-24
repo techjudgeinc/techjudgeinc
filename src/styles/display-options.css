@@ -207,6 +207,11 @@ body .choice input:checked+.choice-content:before{border-color:var(--gold);box-s
 /* Black canvas, isolated pools of light, and deliberate breaks between chapters. */
 :root[data-theme=dark]{--ink:#000;--surface:#10100f;--raised:#1a1917;--soft:#090908}
 .site-atmosphere{display:none}
+.cursor-orb{position:fixed;top:0;left:0;z-index:0;width:220px;height:220px;border-radius:50%;pointer-events:none;opacity:0;transform:translate3d(-300px,-300px,0);background:radial-gradient(circle,color-mix(in srgb,var(--gold) 9%,transparent) 0%,color-mix(in srgb,var(--gold) 3%,transparent) 38%,transparent 72%);mix-blend-mode:screen;will-change:transform;transition:opacity .25s ease}
+.cursor-orb.is-active{opacity:1}
+[data-theme=light] .cursor-orb{mix-blend-mode:multiply;background:radial-gradient(circle,color-mix(in srgb,var(--gold) 6%,transparent),transparent 72%)}
+:root[data-loading] .cursor-orb,:root[data-motion=paused] .cursor-orb{opacity:0}
+@media(hover:none),(pointer:coarse),(prefers-reduced-motion:reduce){.cursor-orb{display:none}}
 .hero-light{inset:0 0 auto;height:700px;background:radial-gradient(ellipse 260px 230px at 14% 30%,#d4b78422,transparent 100%),radial-gradient(ellipse 220px 190px at 87% 60%,#b780461c,transparent 100%)}
 .hero-light:after{top:30px;left:5%;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,#e0bc7628,transparent 68%);filter:blur(20px);animation:orb-breathe 12s ease-in-out infinite alternate}
 .hero-grid{opacity:.35;mask-image:radial-gradient(ellipse at 50% 0,#0005,transparent 65%)}
